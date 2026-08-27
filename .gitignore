@@ -1,0 +1,13 @@
+.lake/
+**/.lake/
+*.olean
+*.ilean
+tex/*.aux
+tex/*.log
+tex/*.out
+tex/*.pdf
+tex/*.bbl
+tex/*.blg
+tex/*.toc
+tex/*.synctex.gz
+.cache/

@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newcommand{\NBC}{\operatorname{NBC}}
+\newcommand{\Vol}{\operatorname{Vol}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\1}{\mathbf{1}}
+
+\title{A Human-Readable Account of the NBC Volume Identity for Hard-Sphere Mayer Sums}
+\author{ukiyois (research direction and maintainer)\\
+AI-assisted Lean formalization and proof extraction}
+\date{2026-08-27}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For a hard-sphere configuration, the connected Mayer graph sum is a signed
+connected-subgraph count of its overlap graph.  A finite broken-circuit
+cancellation turns that count into a fixed-sign number of no-broken-circuit
+spanning trees.  Regrouping over the corresponding tree-owned regions gives
+the exact positive volume identity.  The final statement is formulated on the
+standard anchored Euclidean configuration space with product Lebesgue measure.
+An explicit measure-preserving coordinate map to the flat space
+$\mathbb{R}^{d(k-1)}$ is also recorded, so the two common presentations of the
+configuration measure are not silently identified.  The formal companion
+checks both the finite and analytic steps.
+\end{abstract}
+
+This document is an explanatory mathematical translation of the formalization:
+it records the proof architecture and the key intermediate identities in a
+reader-friendly form.  The kernel-checked proof is the Lean development in
+this repository; this TeX file is not itself a formal proof artifact.
+
+\section{Definitions}
+
+Fix $k\ge2$, dimension $d\ge1$, diameter $1$, and $r_1=0$.  For a
+configuration $x=(r_2,\ldots,r_k)\in\mathbb{R}^{d(k-1)}$, define its overlap
+graph
+\[
+ E(\calO(x))=\{\{i,j\}:|r_i-r_j|<1\}.
+\]
+For a graph $\Gamma$ on $[k]$, let $c_\Gamma(A)$ be the number of connected
+components of $([k],A)$, and define
+\[
+ m(\Gamma)=\sum_{\substack{A\subseteq E(\Gamma)\\c_\Gamma(A)=1}}
+              (-1)^{|A|}.
+\]
+Fix a strict edge order.  A broken circuit is a circuit with its largest edge
+removed.  Write $\NBC(\Gamma)$ for the number of spanning trees containing no
+broken circuit.
+
+Let $\calT_k$ denote the finite set of spanning trees of the complete graph
+$K_k$.  Equip the anchored configuration space with its product Lebesgue
+measure; the notation $dx$ below refers to this canonical measure.
+
+For completeness, there is an explicit bridge to the flat-coordinate model
+used in much of the virial literature.  Write
+
+\[
+ X=\operatorname{Fin}(k-1)\to\operatorname{EuclideanSpace}(\mathbb{R},
+     \operatorname{Fin}(d)),\qquad
+ Y=\operatorname{EuclideanSpace}(\mathbb{R},\operatorname{Fin}((k-1)d)).
+\]
+
+The map $F:X\to Y$ first writes each Euclidean block in its real
+coordinates, then sends $(i,j)$ to the corresponding coordinate of
+\(\operatorname{Fin}((k-1)d)\) using the standard finite-index equivalence.
+Thus $F$ is a bijective coordinate reordering.  The measure proof factors
+into four elementary steps: the Euclidean coordinate representation in each
+block, finite-product currying, reindexing by the finite-index equivalence,
+and the inverse Euclidean coordinate representation.  Each step preserves
+the corresponding product volume, so
+
+\[
+ F_*\,dx=dy.
+\tag{0}
+\]
+
+In particular, for every measurable $A\subseteq X$,
+
+\[
+ \Vol_Y(F(A))=\Vol_X(A).
+\tag{0a}
+\]
+
+The formal development defines the flat NBC region as $F(\NBC_T)$ and proves
+(0a) for it.  This makes the usual $\mathbb{R}^{d(k-1)}$ presentation an
+explicit transported version of the product-space statement, without
+introducing a second unproved measure convention.
+
+For a spanning tree $T$ of $K_k$, put
+\[
+ X_T=\{x:|r_i-r_j|<1\text{ for every }ij\in E(T)\},
+\]
+and
+\[
+ \NBC_T=\{x\in X_T:T\text{ contains no broken circuit of }\calO(x)\}.
+\]
+The definition of $X_T$ constrains tree edges only; other pairs may also be
+active.
+
+The connected Mayer weight and anchored cluster integral are
+\[
+ \omega_k(x)=\sum_{G\text{ connected on }[k]}
+       \prod_{e\in E(G)}f_e(x),
+ \qquad f_e(x)=-\1_{e\in E(\calO(x))},
+\]
+\[
+ b_k=\frac{1}{k!}\int\omega_k(x)\,dx.
+\]
+
+\section{Restriction to the active graph}
+
+\begin{lemma}
+For every configuration $x$,
+\[
+ \omega_k(x)=m(\calO(x)).
+\]
+\end{lemma}
+
+\begin{proof}
+For a connected graph $G$, its product is zero unless
+$E(G)\subseteq E(\calO(x))$.  In the latter case the product is
+$(-1)^{|E(G)|}$.  Replacing $E(G)$ by $A$ gives exactly the sum defining
+$m(\calO(x))$.
+\end{proof}
+
+\section{The finite broken-circuit cancellation}
+
+\begin{lemma}[NBC cancellation]
+For a connected graph $\Gamma$ on $[k]$,
+\[
+ m(\Gamma)=(-1)^{k-1}\NBC(\Gamma).
+\tag{1}
+\]
+\end{lemma}
+
+\begin{proof}
+Call an edge $e$ a candidate for an edge set $A$ if there is a circuit $C$
+whose largest edge is $e$ and such that $C\setminus\{e\}\subseteq A$.  Thus
+$A$ contains a broken circuit exactly when it has a candidate.  For a bad
+edge set $A$, choose the least candidate $e(A)$ and define
+\[
+ \tau(A)=A\mathbin{\triangle}\{e(A)\}.
+\]
+Let $C$ witness that $e(A)$ is a candidate.  The path
+$C\setminus\{e(A)\}$ joins the endpoints of $e(A)$, so adding or removing
+$e(A)$ does not change the connected components of $([k],A)$.  The same broken
+circuit remains contained after the toggle, so $e(A)$ remains a candidate.
+
+If $f<e(A)$, then $e(A)$ cannot belong to a broken circuit whose largest edge
+is $f$, since every edge in that broken circuit is smaller than $f$.  Hence
+the candidate status of every smaller edge is unchanged by the toggle.  It
+follows that $e(\tau(A))=e(A)$ and $\tau(\tau(A))=A$.  The map $\tau$ is
+therefore a fixed-point-free involution on the bad connected edge sets, and it
+changes their cardinality by one.  Their signs cancel in pairs.
+
+It remains to identify the fixed terms.  A connected edge set containing a
+cycle contains the broken circuit obtained by deleting the largest edge of
+that cycle.  Thus a connected edge set with no broken circuit is acyclic and
+connected, hence is a spanning tree.  Conversely every NBC spanning tree is
+not bad.  The only surviving terms in $m(\Gamma)$ are consequently the
+$\NBC(\Gamma)$ trees, each with $k-1$ edges, proving (1).
+\end{proof}
+
+\begin{lemma}[Tutte specialization]
+For connected $\Gamma$,
+\[
+ T_\Gamma(1,0)=\NBC(\Gamma),\qquad
+ m(\Gamma)=(-1)^{k-1}T_\Gamma(1,0),
+\]
+where
+\[
+ T_\Gamma(u,v)=\sum_{A\subseteq E(\Gamma)}
+ (u-1)^{c_\Gamma(A)-1}(v-1)^{|A|-k+c_\Gamma(A)}.
+\]
+\end{lemma}
+
+\begin{proof}
+At $u=1$, only $c_\Gamma(A)=1$ survives.  At $v=0$ the remaining term is
+$(-1)^{|A|-k+1}$, which is $(-1)^{k-1}$ times the sign in $m(\Gamma)$.
+Equation (1) then gives $T_\Gamma(1,0)=\NBC(\Gamma)$.
+\end{proof}
+
+\section{Pointwise NBC identity}
+
+From the two preceding lemmas, for every configuration $x$,
+\[
+ \omega_k(x)=
+ \begin{cases}
+ (-1)^{k-1}\NBC(\calO(x)),&\calO(x)\text{ connected},\\
+ 0,&\calO(x)\text{ disconnected}.
+ \end{cases}
+\tag{2}
+\]
+Let
+\[
+ n(x)=\#\{T\in\calT_k:x\in\NBC_T\}.
+\]
+If $\calO(x)$ is connected, $x\in X_T$ is equivalent to
+$E(T)\subseteq E(\calO(x))$, and the second condition in $\NBC_T$ is exactly
+the NBC condition in $\calO(x)$.  If $\calO(x)$ is disconnected, neither side
+counts a spanning tree.  Thus
+\[
+ |\omega_k(x)|=n(x)=\sum_{T\in\calT_k}\1_{\NBC_T}(x).
+\tag{3}
+\]
+
+\section{NBC volume identity}
+
+The analytic details needed to use (3) are elementary but must be included.
+Every edge activity is the indicator of an open norm inequality, so every
+$X_T$ and $\NBC_T$ is Borel: there are only finitely many possible active
+edge patterns, and the NBC condition is a finite Boolean formula in those
+activities.  If $\calO(x)$ is connected, a path from $1$ to any vertex has at
+most $k-1$ edges, each of length less than $1$.  Hence every coordinate of
+$x$ has norm less than $k-1$.  If $\calO(x)$ is disconnected, $\omega_k(x)=0$.
+Thus the integrand is bounded and supported in a finite-radius closed ball;
+it is integrable, and every $\NBC_T$ has finite volume.
+
+\begin{theorem}
+For every $k\ge2$,
+\[
+ k!\,|b_k|=\int |\omega_k(x)|\,dx
+ =\sum_{T\in\calT_k}\Vol(\NBC_T).
+\tag{4}
+\]
+\end{theorem}
+
+\begin{proof}
+Equation (2) gives a constant-sign integrand, so
+$|\int\omega_k|=\int|\omega_k|$.  Substitute (3).  The tree set
+$\calT_k$ is finite, and all indicators are measurable and nonnegative, so
+finite additivity of the integral gives
+\[
+ \int\sum_{T\in\calT_k}\1_{\NBC_T}(x)\,dx
+ =\sum_{T\in\calT_k}\int\1_{\NBC_T}(x)\,dx
+ =\sum_{T\in\calT_k}\Vol(\NBC_T).
+\]
+Finally use $b_k=k!^{-1}\int\omega_k$.
+\end{proof}
+
+\section{Provenance and scope}
+
+The research direction supplied by \texttt{ukiyois} was the key graph-theoretic
+and NBC approach to the signed volume problem, together with the question
+whether a positive decomposition might exist; \texttt{ukiyois} did not state
+the exact identity proved here.  The upstream verified fact records are
+identified by their internal worker authors as follows: fact
+\texttt{2041d4f28d05949e} by \texttt{xhigh3}, fact
+\texttt{4afee99f8b8e6010} by \texttt{xhigh5}, fact
+\texttt{6d35ccd3e0232041} by \texttt{high3}, and fact
+\texttt{7dcc52cfec5875b2} by \texttt{xhigh5}.  They are provenance records
+only and are not imported as proof terms.  The Lean definitions and proofs
+were implemented by AI agent sessions, principally DeepSeek-V4-Flash and
+GLM-5.3-Flash through OpenCode; some runs exposed only the anonymous provider
+alias \texttt{ox-alpha}.  The coordinate measure bridge and this final
+standalone extraction were added in an OpenCode session using
+\texttt{openai/gpt-5.6-luna}.  No claim of strict positivity of $b_k$ or of a
+separate complete sign-alternation theorem is made here.
+
+\section{Formal verification boundary}
+
+The Lean companion does not import fact statements as proof terms and adds no
+project-specific axiom.  The files
+\texttt{NBCMatroid.lean}, \texttt{NBCGraph.lean}, and
+\texttt{GraphicMatroid.lean} check the finite cancellation and graph
+characterizations, while \texttt{MayerNBC.lean} checks the abstract Mayer
+restriction, the pointwise NBC decomposition, and the finite-measure region
+sum.  The dedicated file \texttt{HardSphereNBC.lean} specializes this chain
+to
+\[
+  \texttt{HardSphereConfiguration k d}
+    := \texttt{Fin (k - 1) -> HSPosition d},
+\]
+with particle $1$ at the origin and the product of Euclidean volume measures.
+It proves the Borel measurability, bounded-support integrability, real-valued
+absolute-value identity, and theorem (4) as
+\texttt{hardSphere\_nbc\_volume\_identity}.  Fact IDs are provenance only;
+they are not imported as proof terms.  The companion
+\texttt{HardSphereMeasure.lean} proves (0), (0a), and the flat-coordinate form
+\texttt{hardSphere\_nbc\_volume\_identity\_flat}.
+
+\end{document}

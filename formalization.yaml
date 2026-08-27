@@ -1,0 +1,179 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "Hard-sphere Mayer NBC volume identity"
+  description: >-
+    A Lean formalization of the exact no-broken-circuit volume identity for
+    hard-sphere Mayer cluster integrals.  The development proves the finite
+    graph cancellation, the measurable finite region decomposition, the
+    anchored Euclidean product-measure theorem, and its explicit flat-coordinate
+    measure-preserving transport.
+  authors:
+    - "ukiyois"
+    - "OpenCode agent sessions"
+  responsible_maintainers:
+    - "ukiyois"
+  license: "Apache-2.0"
+
+classification:
+  arxiv: ["math.CO", "math-ph"]
+  msc2020: ["05C15", "82B05"]
+
+sources:
+  - title: "Danus hs-virial verified fact chain: hard-sphere NBC identities"
+    contributors:
+      - name: "xhigh3"
+        role: "recorded author of fact 2041d4f28d05949e"
+      - name: "xhigh5"
+        role: "recorded author of facts 4afee99f8b8e6010 and 7dcc52cfec5875b2"
+      - name: "high3"
+        role: "recorded author of fact 6d35ccd3e0232041"
+      - name: "ukiyois"
+        role: "research-direction contributor; proposed the graph-theoretic/NBC route, not the exact final identity"
+    type: "other"
+    location: "Internal Danus hs-virial fact graph (not shipped in this repository)"
+    relationship: "adapts"
+    note: >-
+      The Lean development re-proves the used statements and does not import
+      fact records as proof terms.  The recorded worker identifiers are
+      provenance credits, not authorship of this Lean proof.
+    author_endorsement: "n/a"
+  - title: "Single-element extensions of matroids"
+    authors:
+      - "Henry H. Crapo"
+    type: "paper"
+    location: "Canadian Journal of Mathematics 19 (1967), 1265-1275"
+    relationship: "background"
+    note: >-
+      Background for the classical no-broken-circuit/Tutte-polynomial
+      interpretation; no theorem from the article is imported as a proof term.
+    author_endorsement: "not-contacted"
+
+related_formalizations: []
+
+status:
+  scope: >-
+    For natural numbers k and d with 2 <= k, the project proves
+    (k.factorial : Real) * |hardSphereBk| equal to the finite sum of the
+    transported NBC-region volumes over all spanning trees of the complete
+    graph.  The primary configuration measure is the product of Euclidean
+    Lebesgue measures on Fin (k - 1) -> EuclideanSpace Real (Fin d); an
+    explicit measurable, measure-preserving coordinate equivalence to
+    EuclideanSpace Real (Fin ((k - 1) * d)) is also proved.  The project does
+    not claim strict positivity of b_k, a separate complete sign-alternation
+    theorem, convergence bounds, or freezing-singularity consequences.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "PalomarHS.main_result"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "manual"
+      models: []
+      framework: "n/a"
+      tool_setup: >-
+        Human mathematical direction, scope decisions, and provenance review by
+        ukiyois, who is the responsible maintainer.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "not tracked"
+      prompting_notes: "n/a"
+    - method: "agent"
+      models: ["deepseek-v4-flash"]
+      framework: "OpenCode"
+      tool_setup: >-
+        Iterative Lean 4 and Mathlib proof search and repair; some OpenCode
+        runs exposed the provider as the anonymous alias ox-alpha.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "not tracked"
+      prompting_notes: "Proof tasks were delegated as finite Lean development tasks."
+    - method: "agent"
+      models: ["GLM-5.3-flash"]
+      framework: "OpenCode"
+      tool_setup: >-
+        Iterative Lean 4 and Mathlib proof search and repair; some OpenCode
+        runs exposed the provider as the anonymous alias ox-alpha.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "not tracked"
+      prompting_notes: "Proof tasks were delegated as finite Lean development tasks."
+    - method: "agent"
+      models: ["openai/gpt-5.6-luna"]
+      framework: "OpenCode"
+      tool_setup: >-
+        This handoff added the explicit product-to-flat measure bridge,
+        Palomar statement separation, and validation edits in the shared
+        workspace.
+      cost:
+        wall_time: "one attended session"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+      prompting_notes: "API checks, isolated scratch compilation, then minimal source edits."
+  spend_usd: "not tracked"
+  notes: >-
+    The human contributor supplied the graph-theoretic/NBC research direction
+    and hypothesized that a positive decomposition might exist, but did not
+    state the exact final identity.  AI agent sessions implemented and repaired
+    the Lean proof.  The anonymous OpenCode provider alias ox-alpha is recorded
+    where the underlying model identity was not exposed.
+
+fidelity:
+  divergences: >-
+    The formal statement uses natural d, so it also covers the degenerate d=0
+    case although the exposition emphasizes d>=1.  Its primary domain is the
+    canonical product measure on Fin (k-1) -> EuclideanSpace Real (Fin d); the
+    flat Euclidean presentation is connected by an explicit measure-preserving
+    equivalence rather than by definitional equality.  The flat NBC region is
+    the image under that equivalence.  The theorem uses the lexicographically
+    largest-edge broken-circuit convention and does not include strict
+    positivity or convergence corollaries.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "ukiyois"
+  notes: >-
+    Statement scope and the product-versus-flat measure distinction were
+    reviewed in the working session.  Lean lake build, Challenge/Solution
+    compilation, axiom printing, and the human-readable TeX build pass.  No
+    independent peer review has been performed.
+
+alignment:
+  namespace: "PalomarHS / HsVirial"
+  statements:
+    - source: "Hard-sphere NBC volume identity in the verified hs-virial fact chain"
+      lean: "PalomarHS.main_result"
+      module: "Solution.lean"
+      status: "proved"
+      note: >-
+        The Challenge declaration is independently readable and has the same
+        type as the proved flat-coordinate theorem in the substantive Lean
+        development.
+    - source: "Coordinate identification of product and flat Euclidean volume"
+      lean: "HsVirial.measurePreserving_hardSphereFlattenEquiv"
+      module: "lean/HardSphereMeasure.lean"
+      status: "proved"
+      note: >-
+        The map is built from Euclidean coordinate representations, finite
+        product currying, finProdFinEquiv, and coordinate reassembly.
+
+acknowledgements: >-
+  Mathlib and the Lean toolchain; the OpenCode framework and the disclosed AI
+  models; the upstream hs-virial fact records and their recorded worker authors
+  xhigh3, xhigh5, and high3.  ukiyois is credited for the key graph-theoretic
+  research direction, problem framing, scope decisions, and repository
+  maintenance; the exact final identity is not attributed to that direction
+  alone.
