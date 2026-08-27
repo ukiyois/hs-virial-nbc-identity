@@ -203,10 +203,11 @@ status:
     Lebesgue measures on Fin (k - 1) -> EuclideanSpace Real (Fin d); an
     explicit measurable, measure-preserving coordinate equivalence to
     EuclideanSpace Real (Fin ((k - 1) * d)) is also proved.  The project does
-    not claim strict positivity of b_k, a separate complete sign-alternation
-    theorem, convergence bounds, or freezing-singularity consequences.  The
-    finite NBC cancellation and the coordinate equivalence are classical or
-    standard ingredients; the submitted statement is the exact bridge from a
+    not claim strict positivity of b_k, convergence bounds, or
+    freezing-singularity consequences.  A checked companion theorem records
+    the non-strict sign alternation of hardSphereBk.  The finite NBC
+    cancellation and the coordinate equivalence are classical or standard
+    ingredients; the submitted statement is the exact bridge from a
     configuration-dependent overlap graph to measurable NBC-region volumes.
   sorry_count: 0
   sorry_in_definitions: 0

@@ -17,6 +17,8 @@ For natural numbers `k` and `d` with `2 <= k`, the checked theorem
 The proof covers the finite graph cancellation, the measurable NBC-region
 decomposition, the anchored product-Lebesgue configuration space, and the
 explicit measure-preserving identification with flat Euclidean coordinates.
+The checked companion theorem `PalomarHS.signed_coefficient_sign` records the
+corresponding non-strict sign alternation of `hardSphereBk`.
 
 ## Repository layout
 
@@ -52,8 +54,7 @@ anchored configuration space `Fin (k - 1) -> EuclideanSpace Real (Fin d)`.
 `HardSphereMeasure.lean` proves the explicit measure-preserving transport to
 `EuclideanSpace Real (Fin ((k - 1) * d))`. The formal statement also includes
 the natural-number case `d = 0`. It does not claim strict positivity,
-additional sign-alternation results, convergence bounds, or freezing
-consequences.
+convergence bounds, or freezing consequences.
 
 The NBC convention is deletion of the lexicographically largest edge from a
 circuit. The upstream fact records use a different smallest-edge convention;
