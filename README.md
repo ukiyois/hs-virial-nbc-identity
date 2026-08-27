@@ -88,7 +88,7 @@ central bridge.
 
 It is incomplete to reduce the result to a direct specialization and
 recombination of a classical finite broken-circuit/Mayer cancellation followed
-by a routine coordinate change. The overlap graph is a function of the
+by a standard coordinate identification. The overlap graph is a function of the
 continuous hard-sphere configuration, so the finite cancellation is applied
 pointwise while the active graph changes with the configuration. The proof then
 turns the pointwise NBC count into measurable tree-owned regions and an exact
