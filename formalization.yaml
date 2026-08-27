@@ -9,7 +9,10 @@ project:
     hard-sphere Mayer cluster integrals.  The development proves the finite
     graph cancellation, the measurable finite region decomposition, the
     anchored Euclidean product-measure theorem, and its explicit flat-coordinate
-    measure-preserving transport.
+    measure-preserving transport.  The central contribution is the exact
+    pointwise-to-integral bridge for a configuration-dependent overlap graph;
+    the classical finite cancellation and the conventional coordinate change
+    are recorded as ingredients, not as standalone novelty claims.
   authors:
     - "ukiyois"
     - "OpenCode agent sessions"
@@ -43,12 +46,150 @@ sources:
   - title: "Single-element extensions of matroids"
     authors:
       - "Henry H. Crapo"
+    id: "https://doi.org/10.6028/jres.069b.003"
     type: "paper"
-    location: "Canadian Journal of Mathematics 19 (1967), 1265-1275"
+    location: "Journal of Research of the National Bureau of Standards Section B 69B(1-2) (1965), 55-65"
     relationship: "background"
     note: >-
-      Background for the classical no-broken-circuit/Tutte-polynomial
-      interpretation; no theorem from the article is imported as a proof term.
+      Matroid background; it is not the sole source for the broken-circuit or
+      Tutte identities used in the comparison, and no theorem from the article
+      is imported as a proof term.
+    author_endorsement: "not-contacted"
+  - title: "A logical expansion in mathematics"
+    authors:
+      - "Hassler Whitney"
+    id: "https://doi.org/10.1090/S0002-9904-1932-05460-X"
+    type: "paper"
+    location: "Bulletin of the American Mathematical Society 38(8) (1932), 572-579"
+    relationship: "background"
+    note: >-
+      Classical broken-circuit expansion background; the finite cancellation is
+      re-proved in Lean rather than imported from this paper.
+    author_endorsement: "not-contacted"
+  - title: "A contribution to the theory of chromatic polynomials"
+    authors:
+      - "W. T. Tutte"
+    id: "https://doi.org/10.4153/CJM-1954-010-9"
+    type: "paper"
+    location: "Canadian Journal of Mathematics 6 (1954), 80-91"
+    relationship: "background"
+    note: >-
+      Classical spanning-tree/chromatic-polynomial background for the Tutte
+      specialization; no theorem is imported as a proof term.
+    author_endorsement: "not-contacted"
+  - title: "The Tutte polynomial"
+    authors:
+      - "Henry H. Crapo"
+    id: "https://doi.org/10.1007/BF01817442"
+    type: "paper"
+    location: "Aequationes Mathematicae 3 (1969), 211-229"
+    relationship: "background"
+    note: >-
+      Direct Tutte-polynomial background for the finite graph identity; no
+      theorem is imported as a proof term.
+    author_endorsement: "not-contacted"
+  - title: "The broken-circuit complex"
+    authors:
+      - "Tom Brylawski"
+    id: "https://doi.org/10.1090/S0002-9947-1977-0468931-6"
+    type: "paper"
+    location: "Transactions of the American Mathematical Society 234(2) (1977), 417-433"
+    relationship: "background"
+    note: >-
+      Broken-circuit-complex and characteristic-polynomial background; the
+      formalization does not import the article as a dependency.
+    author_endorsement: "not-contacted"
+  - title: "The Statistical Mechanics of Condensing Systems. I"
+    authors:
+      - "Joseph E. Mayer"
+    id: "https://doi.org/10.1063/1.1749933"
+    type: "paper"
+    location: "The Journal of Chemical Physics 5(1) (1937), 67-73"
+    relationship: "background"
+    note: >-
+      Historical Mayer-expansion background; the present Lean definitions are
+      stated directly and do not import the paper.
+    author_endorsement: "not-contacted"
+  - title: "Convergence of fugacity expansions for fluids and lattice gases"
+    authors:
+      - "O. Penrose"
+    id: "https://doi.org/10.1063/1.1703906"
+    type: "paper"
+    location: "Journal of Mathematical Physics 4(10) (1963), 1312-1320"
+    relationship: "background"
+    note: >-
+      Classical Mayer-series convergence background; this submission does not
+      claim or formalize its convergence bound.
+    author_endorsement: "not-contacted"
+  - title: "Correlation functions of classical gases"
+    authors:
+      - "David Ruelle"
+    id: "https://doi.org/10.1016/0003-4916(63)90336-1"
+    type: "paper"
+    location: "Annals of Physics 25(1) (1963), 109-120"
+    relationship: "background"
+    note: >-
+      Classical rigorous-statistical-mechanics background; no convergence
+      theorem from the article is imported as a proof term.
+    author_endorsement: "not-contacted"
+  - title: "Two inequalities for classical and quantum systems of particles with hard cores"
+    authors:
+      - "O. Penrose"
+    id: "https://doi.org/10.1016/0031-9163(64)90418-4"
+    type: "paper"
+    location: "Physics Letters 11(3) (1964), 224-226"
+    relationship: "background"
+    note: >-
+      Hard-core inequality background.  It is recorded separately from the
+      1967 Penrose tree-graph identity and is not imported as a proof term.
+    author_endorsement: "not-contacted"
+  - title: "Convergence of virial expansions"
+    authors:
+      - "J. L. Lebowitz"
+      - "O. Penrose"
+    id: "https://doi.org/10.1063/1.1704186"
+    type: "paper"
+    location: "Journal of Mathematical Physics 5(7) (1964), 841-847"
+    relationship: "background"
+    note: >-
+      Classical virial-series convergence bound used for comparison only; the
+      present theorem does not claim that bound or its corollaries.
+    author_endorsement: "not-contacted"
+  - title: "Convergence of fugacity expansions for classical systems"
+    authors:
+      - "O. Penrose"
+    type: "book"
+    location: "In A. Bak (ed.), Statistical Mechanics: Foundations and Applications, Benjamin (1967), p. 101"
+    relationship: "background"
+    note: >-
+      Source cited by Procacci-Yuhjtman for the Penrose tree-graph identity;
+      this repository uses the identity as comparison background, not as an
+      imported theorem.
+    author_endorsement: "not-contacted"
+  - title: "Seventh virial coefficients for hard spheres and hard disks"
+    authors:
+      - "Francis H. Ree"
+      - "William G. Hoover"
+    id: "https://doi.org/10.1063/1.1840521"
+    type: "paper"
+    location: "The Journal of Chemical Physics 46(11) (1967), 4181-4197"
+    relationship: "background"
+    note: >-
+      Modified-graph and hard-sphere virial-coefficient comparison source; it
+      does not state the exact NBC-region volume identity formalized here.
+    author_endorsement: "not-contacted"
+  - title: "Convergence of Mayer and virial expansions and the Penrose tree-graph identity"
+    authors:
+      - "Aldo Procacci"
+      - "Sergio A. Yuhjtman"
+    id: "https://doi.org/10.1007/s11005-016-0918-7"
+    type: "paper"
+    location: "Letters in Mathematical Physics 107(1) (2017), 31-46; arXiv:1508.07379 (submitted 2015)"
+    relationship: "background"
+    note: >-
+      Uses the 1967 Penrose tree-graph identity with a minimum-spanning-tree
+      partition to obtain convergence bounds.  It is an adjacent comparison
+      source, not a source of the present exact NBC-region volume statement.
     author_endorsement: "not-contacted"
 
 related_formalizations: []
@@ -63,7 +204,10 @@ status:
     explicit measurable, measure-preserving coordinate equivalence to
     EuclideanSpace Real (Fin ((k - 1) * d)) is also proved.  The project does
     not claim strict positivity of b_k, a separate complete sign-alternation
-    theorem, convergence bounds, or freezing-singularity consequences.
+    theorem, convergence bounds, or freezing-singularity consequences.  The
+    finite NBC cancellation and the coordinate equivalence are classical or
+    standard ingredients; the submitted statement is the exact bridge from a
+    configuration-dependent overlap graph to measurable NBC-region volumes.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -92,19 +236,22 @@ automation:
       models: ["deepseek-v4-flash"]
       framework: "OpenCode"
       tool_setup: >-
-        Iterative Lean 4 and Mathlib proof search and repair; some OpenCode
-        runs exposed the provider as the anonymous alias ox-alpha.
+        Iterative Lean 4 and Mathlib proof search and repair using
+        DeepSeek-V4-Flash under its own model label; the ox-alpha alias does not
+        describe this model.
       cost:
         wall_time: "not tracked"
         spend_usd: "not tracked"
         hardware: "not tracked"
       prompting_notes: "Proof tasks were delegated as finite Lean development tasks."
     - method: "agent"
-      models: ["GLM-5.3-flash"]
+      models: ["GLM-5.3-Flash"]
       framework: "OpenCode"
       tool_setup: >-
-        Iterative Lean 4 and Mathlib proof search and repair; some OpenCode
-        runs exposed the provider as the anonymous alias ox-alpha.
+        Iterative Lean 4 and Mathlib proof search and repair.  At the time of
+        the relevant runs GLM-5.3-Flash was not publicly released; OpenCode
+        exposed its free route under the alias ox-alpha, which is not a
+        DeepSeek alias.
       cost:
         wall_time: "not tracked"
         spend_usd: "not tracked"
@@ -127,8 +274,8 @@ automation:
     The human contributor supplied the graph-theoretic/NBC research direction
     and hypothesized that a positive decomposition might exist, but did not
     state the exact final identity.  AI agent sessions implemented and repaired
-    the Lean proof.  The anonymous OpenCode provider alias ox-alpha is recorded
-    where the underlying model identity was not exposed.
+    the Lean proof.  The OpenCode alias ox-alpha is recorded only for the free
+    GLM-5.3-Flash route described above; it does not identify DeepSeek.
 
 fidelity:
   divergences: >-
@@ -148,8 +295,9 @@ review:
   notes: >-
     Statement scope and the product-versus-flat measure distinction were
     reviewed in the working session.  Lean lake build, Challenge/Solution
-    compilation, axiom printing, and the human-readable TeX build pass.  No
-    independent peer review has been performed.
+    compilation, axiom printing, and the human-readable TeX build pass.  The
+    bibliographic source audit is a self-assessment; no independent peer review
+    has been performed.
 
 alignment:
   namespace: "PalomarHS / HsVirial"
@@ -161,7 +309,9 @@ alignment:
       note: >-
         The Challenge declaration is independently readable and has the same
         type as the proved flat-coordinate theorem in the substantive Lean
-        development.
+        development.  The result is not described as a mere coordinate-change
+        restatement: the pointwise cancellation and measurable region sum are
+        part of the checked theorem.
     - source: "Coordinate identification of product and flat Euclidean volume"
       lean: "HsVirial.measurePreserving_hardSphereFlattenEquiv"
       module: "lean/HardSphereMeasure.lean"

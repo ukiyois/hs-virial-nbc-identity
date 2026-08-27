@@ -247,6 +247,109 @@ finite additivity of the integral gives
 Finally use $b_k=k!^{-1}\int\omega_k$.
 \end{proof}
 
+\section{Relation to prior work}
+
+The finite identity (1) belongs to the classical broken-circuit and
+chromatic-polynomial framework.  Whitney's broken-circuit expansion, Tutte's
+spanning-tree formulation, and Brylawski's broken-circuit-complex treatment
+give the relevant discrete background.  The connected-graph expansion of the
+Mayer coefficient is standard statistical-mechanical background going back to
+Mayer, with rigorous convergence results by Penrose and Ruelle.
+
+The tree-graph literature is adjacent but not identical to the theorem proved
+here.  Penrose's 1967 tree-graph identity and the minimum-spanning-tree
+partition of Procacci--Yuhjtman rewrite or bound connected graph sums;
+Lebowitz--Penrose derive virial convergence bounds from such estimates.
+Ree--Hoover use a different modified-graph representation for hard-sphere
+virial coefficients.  These are comparison sources only: no result from them
+is imported as a Lean proof term, and this repository does not claim their
+convergence or phase-transition conclusions.
+
+\section{Contribution and distinction}
+
+The contribution is the exact identity (4) for the continuous hard-sphere
+Mayer integral, together with its kernel-checked Lean formalization.  The finite
+broken-circuit cancellation, the connected Mayer expansion, and the
+product-to-flat coordinate change are not claimed as new in isolation.  They
+are classical or standard ingredients, explicitly separated from the theorem's
+central bridge.
+
+It is incomplete to describe the result as merely a direct specialization and
+recombination of a classical finite broken-circuit/Mayer cancellation followed
+by a routine coordinate change.  The overlap graph is a function of the
+continuous hard-sphere configuration, so the finite cancellation is applied
+pointwise while the active graph changes with the configuration.  The proof
+then turns the pointwise NBC count into measurable tree-owned regions and an
+exact finite sum of their volumes.  This is an exact identity, not an unsigned
+majorant or a convergence bound.
+
+The coordinate transformation is deliberately not presented as a novel
+contribution.  It supplies a fidelity bridge: the theorem is first proved on
+the anchored product-Lebesgue space and then transported explicitly to the
+usual flat Euclidean presentation.  The mathematical significance is that the
+Mayer cancellation is retained as a nonnegative geometric decomposition rather
+than discarded through absolute values.  The formal significance is that the
+full discrete-to-continuous-to-measure chain is checked by the Lean kernel.
+
+The recorded prior-work search did not identify an exact prior statement of
+this continuous hard-sphere NBC-region volume identity.  This is a bounded
+search result rather than an absolute priority claim.  The comparison is
+therefore precise: classical finite NBC/Tutte and Mayer/tree-graph results are
+background ingredients, while the submitted statement supplies the
+configuration-dependent pointwise-to-measurable-volume bridge.  No claim of
+strict positivity, convergence, or phase-transition consequences is made.
+
+\begin{thebibliography}{99}
+\bibitem{mayer1937} J. E. Mayer, ``The Statistical Mechanics of Condensing
+Systems. I,'' \emph{Journal of Chemical Physics} 5(1) (1937), 67--73.
+DOI: \texttt{10.1063/1.1749933}.
+
+\bibitem{penrose1963} O. Penrose, ``Convergence of Fugacity Expansions for
+Fluids and Lattice Gases,'' \emph{Journal of Mathematical Physics} 4(10)
+(1963), 1312--1320. DOI: \texttt{10.1063/1.1703906}.
+
+\bibitem{ruelle1963} D. Ruelle, ``Correlation Functions of Classical Gases,''
+\emph{Annals of Physics} 25(1) (1963), 109--120.
+DOI: \texttt{10.1016/0003-4916(63)90336-1}.
+
+\bibitem{penrose1964} O. Penrose, ``Two Inequalities for Classical and Quantum
+Systems of Particles with Hard Cores,'' \emph{Physics Letters} 11(3) (1964),
+224--226. DOI: \texttt{10.1016/0031-9163(64)90418-4}.
+
+\bibitem{lebowitzpenrose1964} J. L. Lebowitz and O. Penrose, ``Convergence of
+Virial Expansions,'' \emph{Journal of Mathematical Physics} 5(7) (1964),
+841--847. DOI: \texttt{10.1063/1.1704186}.
+
+\bibitem{penrose1967} O. Penrose, ``Convergence of Fugacity Expansions for
+Classical Systems,'' in A. Bak (ed.), \emph{Statistical Mechanics: Foundations
+and Applications}, Benjamin (1967), p. 101.
+
+\bibitem{whitney1932} H. Whitney, ``A Logical Expansion in Mathematics,''
+\emph{Bulletin of the American Mathematical Society} 38(8) (1932), 572--579.
+DOI: \texttt{10.1090/S0002-9904-1932-05460-X}.
+
+\bibitem{tutte1954} W. T. Tutte, ``A Contribution to the Theory of Chromatic
+Polynomials,'' \emph{Canadian Journal of Mathematics} 6 (1954), 80--91.
+DOI: \texttt{10.4153/CJM-1954-010-9}.
+
+\bibitem{crapo1969} H. H. Crapo, ``The Tutte Polynomial,''
+\emph{Aequationes Mathematicae} 3 (1969), 211--229.
+DOI: \texttt{10.1007/BF01817442}.
+
+\bibitem{brylawski1977} T. Brylawski, ``The Broken-Circuit Complex,''
+\emph{Transactions of the American Mathematical Society} 234(2) (1977),
+417--433. DOI: \texttt{10.1090/S0002-9947-1977-0468931-6}.
+
+\bibitem{reehoover1967} F. H. Ree and W. G. Hoover, ``Seventh Virial
+Coefficients for Hard Spheres and Hard Disks,'' \emph{Journal of Chemical
+Physics} 46(11) (1967), 4181--4197. DOI: \texttt{10.1063/1.1840521}.
+
+\bibitem{procacciyuhjtman2017} A. Procacci and S. A. Yuhjtman, ``Convergence
+of Mayer and Virial Expansions and the Penrose Tree-Graph Identity,''
+\emph{Letters in Mathematical Physics} 107(1) (2017), 31--46; preprint
+arXiv:1508.07379. DOI: \texttt{10.1007/s11005-016-0918-7}.
+\end{thebibliography}
+
 \section{Provenance and scope}
 
 The research direction supplied by \texttt{ukiyois} was the key graph-theoretic
@@ -258,13 +361,15 @@ identified by their internal worker authors as follows: fact
 \texttt{4afee99f8b8e6010} by \texttt{xhigh5}, fact
 \texttt{6d35ccd3e0232041} by \texttt{high3}, and fact
 \texttt{7dcc52cfec5875b2} by \texttt{xhigh5}.  They are provenance records
-only and are not imported as proof terms.  The Lean definitions and proofs
-were implemented by AI agent sessions, principally DeepSeek-V4-Flash and
-GLM-5.3-Flash through OpenCode; some runs exposed only the anonymous provider
-alias \texttt{ox-alpha}.  The coordinate measure bridge and this final
-standalone extraction were added in an OpenCode session using
-\texttt{openai/gpt-5.6-luna}.  No claim of strict positivity of $b_k$ or of a
-separate complete sign-alternation theorem is made here.
+only and are not imported as proof terms.  The Lean definitions and proofs were
+implemented by AI agent sessions through OpenCode.  DeepSeek-V4-Flash was used
+under its own model label.  At the time of the relevant runs, GLM-5.3-Flash had
+not been publicly released; OpenCode exposed its free route under the alias
+\texttt{ox-alpha}.  That alias refers only to the GLM route, not to DeepSeek.
+The coordinate measure bridge and this final standalone extraction were added
+in an OpenCode session using \texttt{openai/gpt-5.6-luna}.  No claim of strict
+positivity of $b_k$ or of a separate complete sign-alternation theorem is made
+here.
 
 \section{Formal verification boundary}
 
