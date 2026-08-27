@@ -86,7 +86,6 @@ lemma component_edge_card_bij (H : SimpleGraph V) [DecidableRel H.Adj] :
         exact mem_componentEdgeFinset.mpr ((ConnectedComponent.toSimpleGraph_adj c ha hb).2 hab)
       · rfl
 
-set_option linter.style.haveILetI false in
 omit [DecidableEq V] in
 lemma component_edge_card_add_one (H : SimpleGraph V) [DecidableRel H.Adj]
     (hH : H.IsAcyclic) (c : H.ConnectedComponent) :

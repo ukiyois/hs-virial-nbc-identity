@@ -292,7 +292,6 @@ lemma graphicMatroid_spanning_iff_graphSpanning
        intro e he
        exact hBA (by simpa using he))
 
-set_option linter.style.haveILetI false in
 omit [DecidableEq V] [LinearOrder (Sym2 V)] in
 lemma graphSpanning_iff_connected_of_connected
     {G : SimpleGraph V} (hG : G.Connected) {A : Finset (Sym2 V)}
@@ -416,7 +415,6 @@ lemma graphNBCBaseSubsets_card_eq_NBC_of_connected
   rw [← graphNBCTreeSubsets_eq_graphNBCBaseSubsets_of_connected hG]
   rfl
 
-set_option linter.style.haveILetI false in
 lemma m_eq_signed_NBC_of_connected
     {G : SimpleGraph V} (hG : G.Connected) :
     m G = (-1 : Int) ^ (Fintype.card V - 1) * (NBC G : Int) := by
