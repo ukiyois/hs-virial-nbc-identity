@@ -10,7 +10,7 @@ rev = "v4.32.0"
 [[lean_lib]]
 name = "NBCVolume"
 srcDir = "lean"
-roots = ["NBCVolume", "NBCMatroid", "NBCGraph", "GraphicMatroid", "MayerNBC", "HardSphereNBC", "HardSphereMeasure"]
+roots = ["NBCVolume", "NBCMatroid", "NBCGraph", "GraphicMatroid", "MayerNBC", "HardSphereNBC", "HardSphereMeasure", "HardSphereFork", "HardSphereTree", "HardSphereGeometry", "HardSphereTreeDifference", "HardSphereTreeEdges", "HardSphereCompound", "HardSphereClosePair", "HardSphereForkPackingCoordinates"]
 
 [[lean_lib]]
 name = "Challenge"

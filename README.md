@@ -1,30 +1,65 @@
-# Hard-sphere Mayer NBC volume identity
+# Hard-sphere Mayer NBC identity and fork-packing volume bound
 
-This repository contains a Lean 4 and Mathlib formalization of the exact
-no-broken-circuit (NBC) volume identity for hard-sphere Mayer cluster
-integrals.
+This repository contains a kernel-checked Lean 4 and Mathlib development of
+the hard-sphere Mayer NBC identity together with an explicit three-dimensional
+geometric upper bound for every tree-owned NBC region.
 
-## Main result
+## Main results
 
-For natural numbers `k` and `d` with `2 <= k`, the checked theorem
-`PalomarHS.main_result` proves
+The principal geometric theorem is the checked declaration
+`PalomarHS.nbc_region_real_volume_le_fork_factor`.  For every spanning tree
+`T` on `k` vertices, it proves
+
+```text
+Vol(NBC_T) <= (17 / 32) ^ hardSphereNu T * hardSphereKappa ^ (k - 1)
+```
+
+Here `hardSphereKappa` is the volume of the unit ball in three-dimensional
+position space, and `hardSphereNu T` is the maximum cardinality of a
+pairwise vertex-disjoint fork packing in `T`.  Thus every available disjoint
+fork contributes an explicit factor `17/32`, strictly improving the base
+tree bound `Vol(NBC_T) <= hardSphereKappa ^ (k - 1)` whenever a fork is present.
+
+The factor is obtained from an attachment-aware, measure-preserving block
+factorization.  Each packed fork contributes two oriented relative-position
+coordinates constrained to the separated-pair region, whose exact volume is
+`(17/32) * hardSphereKappa ^ 2`; all remaining tree-difference coordinates lie
+in unit balls.  The construction handles the orientation of each tree edge
+and the unused coordinates simultaneously, rather than applying independent
+pair estimates to overlapping variables.
+
+The exact identity remains the global structural theorem.  The checked
+declaration `PalomarHS.main_result` proves
 
 ```text
 (k.factorial : Real) * |hardSphereBk|
   = sum over spanning trees T of hardSphereNBCVolumeFlat T
 ```
 
-The proof covers the finite graph cancellation, the measurable NBC-region
-decomposition, the anchored product-Lebesgue configuration space, and the
-explicit measure-preserving identification with flat Euclidean coordinates.
-The checked companion theorem `PalomarHS.signed_coefficient_sign` records the
-corresponding non-strict sign alternation of `hardSphereBk`.
+It converts the signed Mayer graph integral into a finite sum of nonnegative
+NBC-region volumes.  The exact identity supplies the decomposition; the
+fork-packing theorem supplies the stronger per-tree geometric estimate.  The
+current Comparator configuration checks both `PalomarHS.main_result` and
+`PalomarHS.nbc_region_real_volume_le_fork_factor`; both declarations are stated
+independently in `Challenge.lean` and proved in `Solution.lean`.
+
+The proof chain covers finite broken-circuit cancellation, the
+configuration-dependent overlap graph, measurable NBC regions, anchored
+product-Lebesgue configuration space, explicit tree-difference coordinates,
+the attachment-aware fork packing, and the measure-preserving transport to
+flat Euclidean coordinates.
 
 ## Repository layout
 
 - `Challenge.lean`: independently readable statement surface.
-- `Solution.lean`: proved declaration used by Comparator.
+- `Solution.lean`: proved declarations used by Comparator.
 - `lean/`: substantive graph, matroid, Mayer, and hard-sphere development.
+- `lean/HardSphereCompound.lean`: checked fork packing and avoidance interface.
+- `lean/HardSphereTreeDifference.lean`: checked tree difference coordinates,
+  base volume bound, and separated-block interfaces.
+- `lean/HardSphereGeometry.lean`: checked lens and separated-pair calculations.
+- `lean/HardSphereForkPackingCoordinates.lean`: checked oriented fork-packing
+  coordinates, measure-preserving block factorization, and the `17/32` bound.
 - `comparator.json`: Challenge/Solution declaration configuration.
 - `formalization.yaml`: structured provenance, scope, and automation metadata.
 - `tex/nbc_identity.tex`: human-readable mathematical account and proof architecture.
@@ -42,19 +77,27 @@ lake build
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory tex tex/nbc_identity.tex
 ```
 
-`Challenge.lean` intentionally contains a statement-only `sorry`; the
-substantive proof development and `Solution.lean` contain no unresolved proof
-holes or project-specific axioms. The permitted Lean axioms are
+The comparator surface in `Challenge.lean` intentionally contains
+statement-only `sorry` holes for the selected declarations; the substantive
+proof development and `Solution.lean` contain no unresolved proof holes or
+project-specific axioms. The permitted Lean axioms are
 `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Scope
 
-The primary measure is the product of Euclidean Lebesgue measures on the
-anchored configuration space `Fin (k - 1) -> EuclideanSpace Real (Fin d)`.
-`HardSphereMeasure.lean` proves the explicit measure-preserving transport to
-`EuclideanSpace Real (Fin ((k - 1) * d))`. The formal statement also includes
-the natural-number case `d = 0`. It does not claim strict positivity,
-convergence bounds, or freezing consequences.
+The exact NBC identity is formalized for natural numbers `k` and `d` with
+`2 <= k`, on the anchored configuration space
+`Fin (k - 1) -> EuclideanSpace Real (Fin d)`.  The explicit
+measure-preserving transport to `EuclideanSpace Real (Fin ((k - 1) * d))` is
+proved in `HardSphereMeasure.lean`.
+
+The fork-packing upper bound is the dimension-three specialization: for every
+tree `T`, it bounds the corresponding NBC region by
+`(17/32) ^ hardSphereNu T * hardSphereKappa ^ (k - 1)`.  Its proof uses the
+exact separated-pair volume and a simultaneous coordinate factorization.  The
+formal natural-number parameter also includes the degenerate `d = 0` identity
+case.  The development does not claim strict positivity of `b_k`, a complete
+sign-alternation theorem, convergence bounds, or freezing consequences.
 
 The NBC convention is deletion of the lexicographically largest edge from a
 circuit. The upstream fact records use a different smallest-edge convention;
@@ -62,62 +105,61 @@ the convention change is stated explicitly in `formalization.yaml`.
 
 ## Relation to prior work
 
-The finite graph identity is part of the classical broken-circuit and
-chromatic-polynomial literature. Whitney's broken-circuit expansion, Tutte's
-spanning-tree formulation, and the later broken-circuit-complex treatment by
-Brylawski explain the graph-side cancellation and its Tutte specialization.
-The connected-graph expansion of a Mayer coefficient is standard statistical
-mechanics background going back to Mayer, with rigorous convergence treatments
-by Penrose and Ruelle.
+Prior work on broken circuits, chromatic polynomials, and spanning trees
+provides the discrete comparison context. Whitney's broken-circuit expansion,
+Tutte's spanning-tree formulation, and Brylawski's broken-circuit-complex
+treatment describe the graph-side cancellation and its Tutte specialization.
+The connected-graph expansion of a Mayer coefficient and the convergence
+results of Penrose and Ruelle provide the statistical-mechanics comparison
+context.
 
 The tree-graph literature is related but addresses a different statement.
 Penrose's 1967 tree-graph identity and the minimum-spanning-tree partition of
 Procacci--Yuhjtman rewrite or bound connected graph sums; Lebowitz--Penrose
 derive virial convergence bounds from such estimates. Ree--Hoover use a
 different modified-graph representation for hard-sphere virial coefficients.
-Those works are comparison sources, not imported proof terms, and this
-repository does not claim their convergence or phase-transition conclusions.
+Those works provide comparison context; their convergence and phase-transition
+conclusions are separate results and are not formalized by this theorem.
 
 ## Contribution and distinction
 
-The contribution is the exact identity for the continuous hard-sphere Mayer
-integral, together with its kernel-checked Lean formalization. The finite
-broken-circuit cancellation, the connected Mayer expansion, and the
-product-to-flat coordinate change are not claimed as new in isolation. They are
-classical or standard ingredients, explicitly separated from the theorem's
-central bridge.
+The central contribution is the combination of an exact NBC volume identity
+with an attachment-aware compound-fork estimate.  The identity turns the
+configuration-dependent signed Mayer sum into a finite sum of nonnegative
+tree-owned volumes.  The geometric layer then exploits pairwise disjoint
+forks inside each tree to obtain the explicit multiplicative suppression
+`(17/32) ^ hardSphereNu T`.
 
-It is incomplete to reduce the result to a direct specialization and
-recombination of a classical finite broken-circuit/Mayer cancellation followed
-by a standard coordinate identification. The overlap graph is a function of the
-continuous hard-sphere configuration, so the finite cancellation is applied
-pointwise while the active graph changes with the configuration. The proof then
-turns the pointwise NBC count into measurable tree-owned regions and an exact
-finite sum of their volumes. This is an exact identity, not an unsigned
-majorant or a convergence bound.
+The decisive geometric step is a simultaneous, orientation-aware coordinate
+factorization: two coordinates per packed fork form a separated pair, while
+the complementary coordinates remain in unit balls.  The resulting product
+measure statement is transported by an explicit measure-preserving map and
+checked by the Lean kernel.  This retains the structure of the NBC
+decomposition instead of replacing it with an unsigned global majorant.
 
-The conventional coordinate transformation is deliberately not presented as a
-novel contribution. Its role is fidelity: the theorem is first proved for the
-anchored product-Lebesgue space and then transported explicitly to the usual
-flat Euclidean presentation. The main mathematical significance is preserving
-the Mayer cancellation as a nonnegative geometric decomposition instead of
-discarding it through absolute values; the main formal significance is that the
-entire discrete-to-continuous-to-measure chain is checked by the Lean kernel.
+The finite broken-circuit cancellation, connected Mayer expansion, and
+product-to-flat coordinate map are supporting components of the checked
+construction.  The formalized contribution is the complete
+pointwise-to-measurable-volume bridge together with the verified fork-packing
+geometry and its quantitative per-tree bound.
 
 | Aspect | Prior work | This repository |
 | --- | --- | --- |
-| Finite NBC/Tutte cancellation | Classical finite graph/matroid identity | Re-proved and connected to the analytic statement; not claimed new alone |
-| Mayer/tree-graph methods | Connected sums are expanded, rewritten, or bounded | Exact NBC-region volume equality, not a bound |
-| Hard-sphere geometry | Standard overlap and configuration-space ingredients | Configuration-dependent overlap graph and measurable tree-owned regions are linked pointwise to the integral |
-| Coordinates | Ordinary Euclidean/product-coordinate identifications | Explicit measure-preserving bridge for fidelity; not a novelty claim |
+| Finite NBC/Tutte cancellation | Prior finite graph/matroid results | Re-proved and connected to the analytic statement |
+| Mayer/tree-graph methods | Connected sums are expanded, rewritten, or bounded | Exact NBC-region volume equality |
+| Hard-sphere geometry | Existing overlap and configuration-space results | Configuration-dependent overlap graph and measurable tree-owned regions are linked pointwise to the integral |
+| Coordinates | Ordinary Euclidean/product-coordinate identifications | Explicit measure-preserving bridge in the checked theorem |
+| Fork geometry | Separated-pair and fork exclusions | Attachment-aware compound-fork factorization and the `17/32` per-fork volume bound |
 | Verification | Mathematical literature statements | Full discrete, measurable, integrable, and measure-transport chain checked in Lean |
 
 The recorded prior-work search did not identify an exact prior statement of this
-continuous hard-sphere NBC-region volume identity. That is a bounded search
-result, not an absolute priority claim; the statements above identify precisely
-which parts are classical and where the submitted theorem differs. The theorem
-still does not claim strict positivity, convergence bounds, or phase-transition
-consequences.
+continuous hard-sphere NBC-region volume identity or this fork-packing
+specialization. That is a bounded search result, not an absolute priority
+claim; the statements above identify precisely which parts come from prior work
+and where the submitted development differs. The formalized results currently
+comprise the exact identity and the explicit dimension-three fork-packing upper
+bound. Strict positivity, convergence bounds, and phase-transition consequences
+are separate targets.
 
 Selected references:
 

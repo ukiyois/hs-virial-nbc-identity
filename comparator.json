@@ -1,7 +1,10 @@
 {
   "challenge_module": "Challenge",
   "solution_module": "Solution",
-  "theorem_names": ["PalomarHS.main_result"],
+  "theorem_names": [
+    "PalomarHS.main_result",
+    "PalomarHS.nbc_region_real_volume_le_fork_factor"
+  ],
   "definition_names": [],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

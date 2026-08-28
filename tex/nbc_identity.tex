@@ -12,7 +12,7 @@
 \newcommand{\calO}{\mathcal{O}}
 \newcommand{\1}{\mathbf{1}}
 
-\title{A Human-Readable Account of the NBC Volume Identity for Hard-Sphere Mayer Sums}
+\title{The NBC Volume Identity and Fork-Packing Bound for Hard-Sphere Mayer Sums}
 \author{ukiyois (research direction and maintainer)\\
 AI-assisted Lean formalization and proof extraction}
 \date{2026-08-27}
@@ -25,12 +25,13 @@ For a hard-sphere configuration, the connected Mayer graph sum is a signed
 connected-subgraph count of its overlap graph.  A finite broken-circuit
 cancellation turns that count into a fixed-sign number of no-broken-circuit
 spanning trees.  Regrouping over the corresponding tree-owned regions gives
-the exact positive volume identity.  The final statement is formulated on the
-standard anchored Euclidean configuration space with product Lebesgue measure.
-An explicit measure-preserving coordinate map to the flat space
-$\mathbb{R}^{d(k-1)}$ is also recorded, so the two common presentations of the
-configuration measure are not silently identified.  The formal companion
-checks both the finite and analytic steps.
+the exact positive volume identity.  In dimension three, an
+attachment-aware packing of pairwise vertex-disjoint forks yields the stronger
+per-tree estimate
+$\Vol(\NBC_T)\le(17/32)^{\nu(T)}\kappa^{k-1}$.
+The formal companion checks the pointwise NBC decomposition, the measurable
+volume identity, the oriented fork factorization, and the explicit
+measure-preserving coordinate transports.
 \end{abstract}
 
 This document is an explanatory mathematical translation of the formalization:
@@ -71,7 +72,7 @@ used in much of the virial literature.  Write
 
 The map $F:X\to Y$ first writes each Euclidean block in its real
 coordinates, then sends $(i,j)$ to the corresponding coordinate of
-\(\operatorname{Fin}((k-1)d)\) using the standard finite-index equivalence.
+\(\operatorname{Fin}((k-1)d)\) using the finite-index equivalence.
 Thus $F$ is a bijective coordinate reordering.  The measure proof factors
 into four explicit steps: the Euclidean coordinate representation in each
 block, finite-product currying, reindexing by the finite-index equivalence,
@@ -248,23 +249,67 @@ finite additivity of the integral gives
 Finally use $b_k=k!^{-1}\int\omega_k$.
 \end{proof}
 
-The same constant-sign calculation gives the checked companion relation
+\section{The three-dimensional fork-packing bound}
+
+Now specialize to dimension $d=3$.  Let $\kappa$ be the volume of the unit
+ball in the three-dimensional position space, and let $\nu(T)$ be the maximum
+cardinality of a family of pairwise vertex-disjoint forks contained in the tree
+$T$.  A fork has a center and two ordered neighbors.  For each selected fork,
+the two tree-edge differences can be oriented so that they become
+
 \[
- b_k=(-1)^{k-1}|b_k|,
- \qquad (-1)^{k-1}b_k=|b_k|\ge0.
- \tag{5}
+ (r_b-r_a,\ r_c-r_a).
 \]
-This is non-strict: strict positivity requires a separate positive-volume
-argument for at least one NBC region.
+
+On an NBC region, this pair belongs to the separated-pair region: both vectors
+are in the unit ball and their mutual distance is at least one.  The exact
+three-dimensional lens calculation gives
+
+\[
+ \Vol(\text{separated pair})=\frac{17}{32}\kappa^2.
+\tag{5}
+\]
+
+Pairwise vertex-disjointness is the attachment condition that makes these
+constraints simultaneous.  A packing of size $m$ uses $2m$ tree-difference
+coordinates, leaving $k-1-2m$ coordinates.  The oriented coordinate map is a
+measure-preserving rearrangement with sign changes on the selected coordinates,
+so the remaining coordinates contribute unit-ball factors.  Consequently the
+factorized volume is
+
+\[
+ \left(\frac{17}{32}\kappa^2\right)^m
+   \kappa^{k-1-2m}
+ =\left(\frac{17}{32}\right)^m\kappa^{k-1}.
+\]
+
+\begin{theorem}[Fork-packing upper bound]
+For every spanning tree $T$ on $[k]$,
+\[
+ \Vol(\NBC_T)\le
+ \left(\frac{17}{32}\right)^{\nu(T)}\kappa^{k-1}.
+\tag{6}
+\]
+\end{theorem}
+
+\begin{proof}
+Choose a fork packing $P$ of maximum cardinality, so $|P|=\nu(T)$.  The
+orientation-aware coordinate map sends the two selected differences for every
+fork in $P$ to its relative pair and sends the complementary differences to
+the remaining coordinates.  The map preserves product Lebesgue measure.  The
+NBC region maps into the product of $|P|$ separated-pair regions and
+$k-1-2|P|$ unit balls.  Apply (5) to the pair factors and multiply the
+finite product of volumes.  This gives (6).
+\end{proof}
 
 \section{Relation to prior work}
 
-The finite identity (1) belongs to the classical broken-circuit and
-chromatic-polynomial framework.  Whitney's broken-circuit expansion, Tutte's
-spanning-tree formulation, and Brylawski's broken-circuit-complex treatment
-give the relevant discrete background.  The connected-graph expansion of the
-Mayer coefficient is standard statistical-mechanical background going back to
-Mayer, with rigorous convergence results by Penrose and Ruelle.
+Prior work on broken circuits, chromatic polynomials, and spanning trees gives
+the discrete comparison framework.  Whitney's broken-circuit expansion,
+Tutte's spanning-tree formulation, and Brylawski's broken-circuit-complex
+treatment give the relevant graph background.  The connected-graph expansion
+of the Mayer coefficient and the convergence results of Penrose and Ruelle
+provide the statistical-mechanics comparison context.
 
 The tree-graph literature is adjacent but not identical to the theorem proved
 here.  Penrose's 1967 tree-graph identity and the minimum-spanning-tree
@@ -277,37 +322,36 @@ convergence or phase-transition conclusions.
 
 \section{Contribution and distinction}
 
-The contribution is the exact identity (4) for the continuous hard-sphere
-Mayer integral, together with its kernel-checked Lean formalization.  The finite
-broken-circuit cancellation, the connected Mayer expansion, and the
-product-to-flat coordinate change are not claimed as new in isolation.  They
-are classical or standard ingredients, explicitly separated from the theorem's
-central bridge.
+The formalized contribution has two linked parts.  Equation (4) converts the
+configuration-dependent signed Mayer integral into a finite sum of nonnegative
+tree-owned NBC volumes.  The fork-packing theorem then gives the quantitative
+per-tree estimate (6), with one explicit factor $17/32$ for every available
+vertex-disjoint fork.
 
-It is incomplete to describe the result as merely a direct specialization and
-recombination of a classical finite broken-circuit/Mayer cancellation followed
-by a standard coordinate identification.  The overlap graph is a function of the
-continuous hard-sphere configuration, so the finite cancellation is applied
-pointwise while the active graph changes with the configuration.  The proof
-then turns the pointwise NBC count into measurable tree-owned regions and an
-exact finite sum of their volumes.  This is an exact identity, not an unsigned
-majorant or a convergence bound.
+The geometric result uses an attachment-aware construction rather than an
+independent estimate on overlapping pairs.  The two differences attached to a
+packed fork are oriented into a separated relative pair, while all complementary
+differences remain in unit balls.  The complete rearrangement, including the
+edge orientations, preserves product Lebesgue measure and is checked by the
+Lean kernel.  This is the mechanism producing the compound-fork suppression.
 
-The coordinate transformation is deliberately not presented as a novel
-contribution.  It supplies a fidelity bridge: the theorem is first proved on
-the anchored product-Lebesgue space and then transported explicitly to the
-usual flat Euclidean presentation.  The mathematical significance is that the
-Mayer cancellation is retained as a nonnegative geometric decomposition rather
-than discarded through absolute values.  The formal significance is that the
-full discrete-to-continuous-to-measure chain is checked by the Lean kernel.
+Finite broken-circuit cancellation, the connected Mayer expansion, and the
+product-to-flat coordinate map are supporting components of the checked
+construction.  The formalized theorem combines them with the pointwise
+treatment of the configuration-dependent overlap graph, the measurable
+tree-owned decomposition, and the verified three-dimensional fork geometry.
+The result is an exact identity together with an explicit geometric upper
+bound, not a generic unsigned convergence majorant.
 
 The recorded prior-work search did not identify an exact prior statement of
-this continuous hard-sphere NBC-region volume identity.  This is a bounded
-search result rather than an absolute priority claim.  The comparison is
-therefore precise: classical finite NBC/Tutte and Mayer/tree-graph results are
-background ingredients, while the submitted statement supplies the
-configuration-dependent pointwise-to-measurable-volume bridge.  No claim of
-strict positivity, convergence, or phase-transition consequences is made.
+this continuous hard-sphere NBC-region volume identity or this fork-packing
+specialization.  This is a bounded search result rather than an absolute
+priority claim.  The comparison is therefore precise: prior finite NBC/Tutte
+and Mayer/tree-graph results provide background, while the
+submitted development supplies the configuration-dependent
+pointwise-to-measurable-volume bridge and the quantitative fork-packing bound.
+No claim of strict positivity, convergence, or phase-transition consequences is
+made.
 
 \begin{thebibliography}{99}
 \bibitem{mayer1937} J. E. Mayer, ``The Statistical Mechanics of Condensing
@@ -401,6 +445,13 @@ absolute-value identity, and theorem (4) as
 \texttt{hardSphere\_nbc\_volume\_identity}.  Fact IDs are provenance only;
 they are not imported as proof terms.  The companion
 \texttt{HardSphereMeasure.lean} proves (0), (0a), and the flat-coordinate form
-\texttt{hardSphere\_nbc\_volume\_identity\_flat}.
+\texttt{hardSphere\_nbc\_volume\_identity\_flat}.  The three-dimensional fork
+modules prove the exact separated-pair volume, the maximum vertex-disjoint
+fork-packing interface, and the orientation-aware measure-preserving
+factorization used in (6).  The resulting Lean declarations are:
+\begin{quote}
+\texttt{hardSphereNBCRegion\_real\_volume\_le\_forkFactor}\\
+\texttt{PalomarHS.nbc\_region\_real\_volume\_le\_fork\_factor}.
+\end{quote}
 
 \end{document}

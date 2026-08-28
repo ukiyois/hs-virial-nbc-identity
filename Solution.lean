@@ -1,16 +1,19 @@
-import HardSphereMeasure
+import HardSphereCompound
+import HardSphereClosePair
+import HardSphereForkPackingCoordinates
 
 /-!
 # Proved solution
 
 The substantive proof development is in the `lean/` directory.  This module
-exposes the same declaration as `Challenge.lean` and connects it to the
-machine-checked flat-coordinate theorem.
+exposes the same declarations as `Challenge.lean` and connects them to the
+machine-checked flat-coordinate and fork-packing theorems.
 -/
 
 namespace PalomarHS
 
 open HsVirial
+open MeasureTheory
 
 theorem main_result
     {k d : Nat} (hk : 2 ≤ k) :
@@ -51,5 +54,64 @@ theorem signed_coefficient_sign
     _ = (-1 : ℝ) ^ (k - 1) *
           |hardSphereBk (k := k) (d := d)| := by
       rw [habs]
+
+theorem nbc_region_measure_le_fork_avoidance
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    {P : Finset (HardSphereForkTriple k)}
+    (hP : hardSphereForkPacking T P) :
+    (volume : Measure (HardSphereConfiguration k 3))
+        (nbcRegion (V := Fin k)
+          (hardSphereActiveExact (k := k) (d := 3)) T) ≤
+      volume (hardSphereForkAvoidanceRegion T P) := by
+  exact hardSphere_nbc_region_measure_le_forkAvoidance hP
+
+theorem nbc_region_subset_fork_packing_separated
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    {P : Finset (HardSphereForkTriple k)}
+    (hP : hardSphereForkPacking T P) :
+    nbcRegion (V := Fin k)
+        (hardSphereActiveExact (k := k) (d := 3)) T ⊆
+      hardSphereForkPackingSeparatedRegion P := by
+  exact hardSphere_nbc_region_subset_forkPackingSeparatedRegion hP
+
+theorem fork_packing_two_mul_card_le_pred
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    {P : Finset (HardSphereForkTriple k)}
+    (hP : hardSphereForkPacking T P) :
+    2 * P.card ≤ k - 1 := by
+  exact hardSphereForkPacking_two_mul_card_le_pred hP
+
+theorem nbc_region_real_volume_le_kappa
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    (hT : T ∈ treeUniverse (V := Fin k)) :
+    (volume : Measure (HardSphereConfiguration k 3)).real
+        (nbcRegion (V := Fin k)
+          (hardSphereActiveExact (k := k) (d := 3)) T) ≤
+      hardSphereKappa ^ (k - 1) := by
+  exact hardSphereNBCRegion_real_volume_le_kappa hT
+
+theorem nbc_region_real_volume_le_fork_factor
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    (hT : T ∈ treeUniverse (V := Fin k)) :
+    hardSphereNBCVolume (k := k) (d := 3) T ≤
+      (17 / 32 : ℝ) ^ hardSphereNu T * hardSphereKappa ^ (k - 1) := by
+  exact hardSphereNBCRegion_real_volume_le_forkFactor hT
+
+theorem close_pair_real_volume :
+    (volume : Measure (HSPosition 3 × HSPosition 3)).real
+        hardSphereClosePairRegion =
+      5 * Real.pi ^ 2 / 6 := by
+  exact hardSphereClosePairRegion_real_volume
+
+theorem separated_pair_real_volume_ratio :
+    (volume : Measure (HSPosition 3 × HSPosition 3)).real
+        hardSphereSeparatedPairRegion =
+      (17 / 32 : ℝ) * hardSphereKappa ^ 2 := by
+  exact hardSphereSeparatedPairRegion_real_volume_ratio
 
 end PalomarHS

@@ -3,22 +3,29 @@
 version: "v0.4"
 
 project:
-  name: "Hard-sphere Mayer NBC volume identity"
+  name: "Hard-sphere Mayer NBC identity and fork-packing volume bound"
   description: >-
-    A Lean formalization of the exact no-broken-circuit volume identity for
-    hard-sphere Mayer cluster integrals.  The development proves the finite
-    graph cancellation, the measurable finite region decomposition, the
-    anchored Euclidean product-measure theorem, and its explicit flat-coordinate
-    measure-preserving transport.  The central contribution is the exact
-    pointwise-to-integral bridge for a configuration-dependent overlap graph;
-    the classical finite cancellation and the conventional coordinate change
-    are recorded as ingredients, not as standalone novelty claims.
+    A kernel-checked Lean formalization of the exact no-broken-circuit volume
+    identity for hard-sphere Mayer cluster integrals and the stronger
+    dimension-three fork-packing upper bound for each tree-owned NBC region.
+    The development proves finite broken-circuit cancellation, the measurable
+    finite-region decomposition, the anchored Euclidean product-measure
+    theorem, and its explicit flat-coordinate transport.  Its geometric result
+    is the attachment-aware estimate
+    Vol(NBC_T) <= (17/32)^hardSphereNu T * hardSphereKappa^(k-1), where
+    hardSphereNu T is the maximum cardinality of a vertex-disjoint fork packing
+    in T.  The central contribution is the complete pointwise-to-integral
+    bridge together with the orientation-aware measure-preserving factorization
+    that realizes the per-fork volume suppression.
   authors:
     - "ukiyois"
     - "OpenCode agent sessions"
   responsible_maintainers:
     - "ukiyois"
   license: "Apache-2.0"
+
+repository:
+  role: "substantive-development"
 
 classification:
   arxiv: ["math.CO", "math-ph"]
@@ -43,6 +50,17 @@ sources:
       fact records as proof terms.  The recorded worker identifiers are
       provenance credits, not authorship of this Lean proof.
     author_endorsement: "n/a"
+  - title: "Three-dimensional fork-packing upper bound for NBC regions"
+    type: "other"
+    location: "lean/HardSphereForkPackingCoordinates.lean"
+    relationship: "other"
+    note: >-
+      This is the new geometric component developed in the present repository.
+      It establishes the attachment-aware compound-fork bound from the exact
+      separated-pair volume ratio 17/32, a vertex-disjoint fork packing, and a
+      simultaneous measure-preserving coordinate factorization.  No external
+      theorem is imported for this bound.
+    author_endorsement: "n/a"
   - title: "Single-element extensions of matroids"
     authors:
       - "Henry H. Crapo"
@@ -63,8 +81,8 @@ sources:
     location: "Bulletin of the American Mathematical Society 38(8) (1932), 572-579"
     relationship: "background"
     note: >-
-      Classical broken-circuit expansion background; the finite cancellation is
-      re-proved in Lean rather than imported from this paper.
+      Broken-circuit expansion background; the finite cancellation is re-proved
+      in Lean rather than imported from this paper.
     author_endorsement: "not-contacted"
   - title: "A contribution to the theory of chromatic polynomials"
     authors:
@@ -74,8 +92,8 @@ sources:
     location: "Canadian Journal of Mathematics 6 (1954), 80-91"
     relationship: "background"
     note: >-
-      Classical spanning-tree/chromatic-polynomial background for the Tutte
-      specialization; no theorem is imported as a proof term.
+      Spanning-tree/chromatic-polynomial background for the Tutte specialization;
+      no theorem is imported as a proof term.
     author_endorsement: "not-contacted"
   - title: "The Tutte polynomial"
     authors:
@@ -118,8 +136,8 @@ sources:
     location: "Journal of Mathematical Physics 4(10) (1963), 1312-1320"
     relationship: "background"
     note: >-
-      Classical Mayer-series convergence background; this submission does not
-      claim or formalize its convergence bound.
+      Mayer-series convergence background; this submission does not claim or
+      formalize its convergence bound.
     author_endorsement: "not-contacted"
   - title: "Correlation functions of classical gases"
     authors:
@@ -129,8 +147,8 @@ sources:
     location: "Annals of Physics 25(1) (1963), 109-120"
     relationship: "background"
     note: >-
-      Classical rigorous-statistical-mechanics background; no convergence
-      theorem from the article is imported as a proof term.
+      Rigorous statistical-mechanics background; no convergence theorem from the
+      article is imported as a proof term.
     author_endorsement: "not-contacted"
   - title: "Two inequalities for classical and quantum systems of particles with hard cores"
     authors:
@@ -152,8 +170,8 @@ sources:
     location: "Journal of Mathematical Physics 5(7) (1964), 841-847"
     relationship: "background"
     note: >-
-      Classical virial-series convergence bound used for comparison only; the
-      present theorem does not claim that bound or its corollaries.
+      Virial-series convergence background; its bound and corollaries are
+      outside the present formalization.
     author_endorsement: "not-contacted"
   - title: "Convergence of fugacity expansions for classical systems"
     authors:
@@ -175,8 +193,8 @@ sources:
     location: "The Journal of Chemical Physics 46(11) (1967), 4181-4197"
     relationship: "background"
     note: >-
-      Modified-graph and hard-sphere virial-coefficient comparison source; it
-      does not state the exact NBC-region volume identity formalized here.
+      Modified-graph and hard-sphere virial-coefficient comparison source; the
+      exact NBC-region volume identity is established in the present development.
     author_endorsement: "not-contacted"
   - title: "Convergence of Mayer and virial expansions and the Penrose tree-graph identity"
     authors:
@@ -189,30 +207,43 @@ sources:
     note: >-
       Uses the 1967 Penrose tree-graph identity with a minimum-spanning-tree
       partition to obtain convergence bounds.  It is an adjacent comparison
-      source, not a source of the present exact NBC-region volume statement.
+      source; the present exact NBC-region volume statement is established
+      independently here.
     author_endorsement: "not-contacted"
 
 related_formalizations: []
 
 status:
   scope: >-
-    For natural numbers k and d with 2 <= k, the project proves
-    (k.factorial : Real) * |hardSphereBk| equal to the finite sum of the
+    For natural numbers k and d with 2 <= k, the project proves the exact
+    identity (k.factorial : Real) * |hardSphereBk| as the finite sum of
     transported NBC-region volumes over all spanning trees of the complete
-    graph.  The primary configuration measure is the product of Euclidean
-    Lebesgue measures on Fin (k - 1) -> EuclideanSpace Real (Fin d); an
-    explicit measurable, measure-preserving coordinate equivalence to
-    EuclideanSpace Real (Fin ((k - 1) * d)) is also proved.  The project does
-    not claim strict positivity of b_k, convergence bounds, or
-    freezing-singularity consequences.  A checked companion theorem records
-    the non-strict sign alternation of hardSphereBk.  The finite NBC
-    cancellation and the coordinate equivalence are classical or standard
-    ingredients; the submitted statement is the exact bridge from a
-    configuration-dependent overlap graph to measurable NBC-region volumes.
-  sorry_count: 0
+    graph.  In dimension three it additionally proves, for every tree T, the
+    stronger per-tree bound
+    Vol(NBC_T) <= (17/32)^hardSphereNu T * hardSphereKappa^(k-1).
+    Here hardSphereNu T is the maximum cardinality of a pairwise
+    vertex-disjoint fork packing.  The proof is an attachment-aware,
+    orientation-aware measure-preserving factorization: each packed fork
+    contributes a separated pair of relative coordinates and every remaining
+    coordinate contributes a unit-ball factor.  The primary configuration
+    measure is the product of Euclidean Lebesgue measures on
+    Fin (k - 1) -> EuclideanSpace Real (Fin d), with an explicit
+    measure-preserving transport to EuclideanSpace Real (Fin ((k - 1) * d)).
+    Strict positivity of b_k, a separate complete sign-alternation theorem,
+    convergence bounds, and freezing-singularity consequences are separate
+    targets.  The finite NBC cancellation, coordinate transport, and fork
+    factorization form a checked bridge from the configuration-dependent
+    overlap graph to quantitative measurable NBC-region volumes.
+  sorry_count: 1
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
   main_results:
+    - declaration: "PalomarHS.nbc_region_real_volume_le_fork_factor"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
     - declaration: "PalomarHS.main_result"
       file: "Solution.lean"
       sorry_count: 0
@@ -262,9 +293,10 @@ automation:
       models: ["openai/gpt-5.6-luna"]
       framework: "OpenCode"
       tool_setup: >-
-        This handoff added the explicit product-to-flat measure bridge,
-        Palomar statement separation, and validation edits in the shared
-        workspace.
+        This handoff completed the oriented fork-packing coordinate map, the
+        simultaneous measure-preserving block factorization, the per-tree
+        17/32 upper bound, Palomar statement separation, and validation edits
+        in the shared workspace.
       cost:
         wall_time: "one attended session"
         spend_usd: "not tracked"
@@ -286,8 +318,10 @@ fidelity:
     flat Euclidean presentation is connected by an explicit measure-preserving
     equivalence rather than by definitional equality.  The flat NBC region is
     the image under that equivalence.  The theorem uses the lexicographically
-    largest-edge broken-circuit convention and does not include strict
-    positivity or convergence corollaries.
+    largest-edge broken-circuit convention.  The fork-packing upper bound is
+    specialized to d=3 and uses the formal maximum vertex-disjoint fork
+    packing hardSphereNu T; it does not assert an all-dimension analogue.
+    Strict positivity and convergence corollaries remain separate targets.
 
 review:
   status: "self-assessed"
@@ -295,14 +329,25 @@ review:
     - "ukiyois"
   notes: >-
     Statement scope and the product-versus-flat measure distinction were
-    reviewed in the working session.  Lean lake build, Challenge/Solution
-    compilation, axiom printing, and the human-readable TeX build pass.  The
-    bibliographic source audit is a self-assessment; no independent peer review
-    has been performed.
+    reviewed in the working session.  The exact identity and the fork-packing
+    upper bound were checked in the substantive Lean development; Lean lake
+    build, Challenge/Solution compilation, axiom printing, and the
+    human-readable TeX build pass.  The bibliographic source audit is a
+    self-assessment; no independent peer review has been performed.
 
 alignment:
   namespace: "PalomarHS / HsVirial"
   statements:
+    - source: "Three-dimensional fork-packing upper bound for NBC regions"
+      lean: "PalomarHS.nbc_region_real_volume_le_fork_factor"
+      module: "Solution.lean"
+      status: "proved"
+      note: >-
+        For every tree T, the maximum vertex-disjoint fork packing produces a
+        simultaneous separated-pair/unit-ball factorization and the bound
+        (17/32)^hardSphereNu T * hardSphereKappa^(k-1).  The separated-pair
+        constant is established by the checked three-dimensional lens
+        calculation.
     - source: "Hard-sphere NBC volume identity in the verified hs-virial fact chain"
       lean: "PalomarHS.main_result"
       module: "Solution.lean"
@@ -320,6 +365,13 @@ alignment:
       note: >-
         The map is built from Euclidean coordinate representations, finite
         product currying, finProdFinEquiv, and coordinate reassembly.
+    - source: "Three-dimensional fork-packing avoidance interface"
+      lean: "PalomarHS.nbc_region_measure_le_fork_avoidance"
+      module: "Solution.lean"
+      status: "proved"
+      note: >-
+        Every fork in a verified vertex-disjoint packing is excluded from the
+        NBC region, and the resulting measurable avoidance region contains it.
 
 acknowledgements: >-
   Mathlib and the Lean toolchain; the OpenCode framework and the disclosed AI

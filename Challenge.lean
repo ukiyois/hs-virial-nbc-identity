@@ -1,18 +1,20 @@
 import Mathlib
 
 /-!
-# Advertised statement
+# Advertised statements
 
 This file is the deliberately small statement surface for the hard-sphere NBC
-volume identity.  The definitions below are copied from the substantive proof
-development so that the statement is independently readable; no proof theorem
-from that development is imported here.
+identity and the three-dimensional fork-packing volume bound.  The definitions
+below are copied from the substantive proof development so that the statements
+are independently readable; no proof theorem from that development is imported
+here.
 -/
 
 namespace HsVirial
 
 open Set
 open SimpleGraph
+open Metric
 open MeasureTheory
 open scoped BigOperators ENNReal
 
@@ -187,6 +189,42 @@ def hardSphereNBCVolumeFlat
       nbcRegion (V := Fin k)
         (hardSphereActiveExact (k := k) (d := d)) T)
 
+/-- A lexicographically ordered fork of a tree. -/
+def hardSphereFork {k : Nat} (T : Finset (Sym2 (Fin k)))
+    (a b c : Fin k) : Prop :=
+  a < b ∧ b < c ∧ s(a, b) ∈ T ∧ s(a, c) ∈ T
+
+/-- The three vertices supporting a fork triple. -/
+abbrev HardSphereForkTriple (k : Nat) := Fin k × Fin k × Fin k
+
+def hardSphereForkSupport {k : Nat} (f : HardSphereForkTriple k) : Finset (Fin k) :=
+  {f.1, f.2.1, f.2.2}
+
+/-- A finite family of pairwise vertex-disjoint forks in a tree. -/
+def hardSphereForkPacking {k : Nat}
+    (T : Finset (Sym2 (Fin k))) (P : Finset (HardSphereForkTriple k)) : Prop :=
+  (∀ f ∈ P, hardSphereFork T f.1 f.2.1 f.2.2) ∧
+    (∀ f ∈ P, ∀ g ∈ P, f ≠ g →
+      ∀ x, x ∈ hardSphereForkSupport f →
+        x ∈ hardSphereForkSupport g → False)
+
+/-- All finite fork packings of a fixed tree. -/
+noncomputable def hardSphereForkPackings {k : Nat}
+    (T : Finset (Sym2 (Fin k))) :
+    Finset (Finset (HardSphereForkTriple k)) := by
+  classical
+  exact (Finset.univ.powerset).filter (hardSphereForkPacking T)
+
+/-- The maximum cardinality of a pairwise vertex-disjoint fork packing. -/
+noncomputable def hardSphereNu {k : Nat}
+    (T : Finset (Sym2 (Fin k))) : Nat :=
+  (hardSphereForkPackings T).sup Finset.card
+
+/-- The volume of the open unit ball in the three-dimensional position space. -/
+def hardSphereKappa : ℝ :=
+  letI : Fintype (Fin 3) := Fin.fintype 3
+  (volume : Measure (HSPosition 3)).real (ball (0 : HSPosition 3) 1)
+
 end
 
 end HsVirial
@@ -194,6 +232,7 @@ end HsVirial
 namespace PalomarHS
 
 open HsVirial
+open MeasureTheory
 
 /- The proof is supplied independently in `Solution.lean`. -/
 theorem main_result
@@ -203,6 +242,15 @@ theorem main_result
         |hardSphereBk (k := k) (d := d)| =
       ∑ T ∈ treeUniverse (V := Fin k),
         hardSphereNBCVolumeFlat (k := k) (d := d) T := by
+  sorry
+
+/-- The three-dimensional fork-packing upper bound for each tree-owned region. -/
+theorem nbc_region_real_volume_le_fork_factor
+    {k : Nat} [NeZero k]
+    {T : Finset (Sym2 (Fin k))}
+    (hT : T ∈ treeUniverse (V := Fin k)) :
+    hardSphereNBCVolume (k := k) (d := 3) T ≤
+      (17 / 32 : ℝ) ^ hardSphereNu T * hardSphereKappa ^ (k - 1) := by
   sorry
 
 end PalomarHS
