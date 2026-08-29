@@ -12,7 +12,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-/-- A lexicographically ordered fork of a tree. -/
+/-- An order-compatible fork `(a,b,c)` with `a < b < c`; `a` is its center and
+`b,c` are its two leaves. -/
 def hardSphereFork {k : Nat} (T : Finset (Sym2 (Fin k)))
     (a b c : Fin k) : Prop :=
   a < b ∧ b < c ∧ s(a, b) ∈ T ∧ s(a, c) ∈ T
@@ -191,7 +192,8 @@ def hardSphereTreeRegion {k : Nat} [NeZero k]
     (T : Finset (Sym2 (Fin k))) : Set (HardSphereConfiguration k 3) :=
   {r | ∀ e ∈ T, hardSphereActiveExact r e = true}
 
-/-- The part of a tree region where the two fork members are also within range. -/
+/-- The part of a tree region where the two leaves of an order-compatible fork
+are also within range. -/
 def hardSphereForkEvent {k : Nat} [NeZero k]
     (T : Finset (Sym2 (Fin k))) (_a b c : Fin k) : Set (HardSphereConfiguration k 3) :=
   hardSphereTreeRegion T ∩ {r |

@@ -25,8 +25,8 @@ For a hard-sphere configuration, the connected Mayer graph sum is a signed
 connected-subgraph count of its overlap graph.  A finite broken-circuit
 cancellation turns that count into a fixed-sign number of no-broken-circuit
 spanning trees.  Regrouping over the corresponding tree-owned regions gives
-the exact positive volume identity.  In dimension three, an
-attachment-aware packing of pairwise vertex-disjoint forks yields the stronger
+the exact positive volume identity.  In dimension three, an attachment-aware
+packing of pairwise vertex-disjoint, order-compatible forks yields the stronger
 per-tree estimate
 $\Vol(\NBC_T)\le(17/32)^{\nu(T)}\kappa^{k-1}$.
 The formal companion checks the pointwise NBC decomposition, the measurable
@@ -253,8 +253,10 @@ Finally use $b_k=k!^{-1}\int\omega_k$.
 
 Now specialize to dimension $d=3$.  Let $\kappa$ be the volume of the unit
 ball in the three-dimensional position space, and let $\nu(T)$ be the maximum
-cardinality of a family of pairwise vertex-disjoint forks contained in the tree
-$T$.  A fork has a center and two ordered neighbors.  For each selected fork,
+cardinality of a family of pairwise vertex-disjoint, order-compatible forks
+contained in the tree $T$.  A formal fork is an ordered triple $(a,b,c)$ with
+$a<b<c$, center $a$, leaves $b,c$, and tree edges $\{a,b\}$ and $\{a,c\}$.
+For each selected fork,
 the two tree-edge differences can be oriented so that they become
 
 \[
@@ -293,7 +295,8 @@ For every spanning tree $T$ on $[k]$,
 \end{theorem}
 
 \begin{proof}
-Choose a fork packing $P$ of maximum cardinality, so $|P|=\nu(T)$.  The
+Choose an order-compatible fork packing $P$ of maximum cardinality, so
+$|P|=\nu(T)$.  The
 orientation-aware coordinate map sends the two selected differences for every
 fork in $P$ to its relative pair and sends the complementary differences to
 the remaining coordinates.  The map preserves product Lebesgue measure.  The
@@ -322,11 +325,12 @@ convergence or phase-transition conclusions.
 
 \section{Contribution and distinction}
 
-The formalized contribution has two linked parts.  Equation (4) converts the
-configuration-dependent signed Mayer integral into a finite sum of nonnegative
-tree-owned NBC volumes.  The fork-packing theorem then gives the quantitative
-per-tree estimate (6), with one explicit factor $17/32$ for every available
-vertex-disjoint fork.
+The formalized result has two linked parts.  Equation (4) converts the signed
+Mayer integral into a finite sum of nonnegative tree-owned NBC volumes.  The
+overlap graph is evaluated at each configuration.  The fork-packing theorem
+then gives the quantitative
+per-tree estimate (6), with one explicit factor $17/32$ for every packed
+order-compatible fork.
 
 The geometric result uses an attachment-aware construction rather than an
 independent estimate on overlapping pairs.  The two differences attached to a
@@ -447,8 +451,9 @@ they are not imported as proof terms.  The companion
 \texttt{HardSphereMeasure.lean} proves (0), (0a), and the flat-coordinate form
 \texttt{hardSphere\_nbc\_volume\_identity\_flat}.  The three-dimensional fork
 modules prove the exact separated-pair volume, the maximum vertex-disjoint
-fork-packing interface, and the orientation-aware measure-preserving
-factorization used in (6).  The resulting Lean declarations are:
+order-compatible fork-packing interface, and the orientation-aware
+measure-preserving factorization used in (6).  The resulting Lean declarations
+are:
 \begin{quote}
 \texttt{hardSphereNBCRegion\_real\_volume\_le\_forkFactor}\\
 \texttt{PalomarHS.nbc\_region\_real\_volume\_le\_fork\_factor}.

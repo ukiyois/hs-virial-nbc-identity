@@ -13,8 +13,10 @@ project:
     theorem, and its explicit flat-coordinate transport.  Its geometric result
     is the attachment-aware estimate
     Vol(NBC_T) <= (17/32)^hardSphereNu T * hardSphereKappa^(k-1), where
-    hardSphereNu T is the maximum cardinality of a vertex-disjoint fork packing
-    in T.  The central contribution is the complete pointwise-to-integral
+    hardSphereNu T is the maximum cardinality of a packing of pairwise
+    vertex-disjoint, order-compatible forks in T.  A formal fork is an ordered
+    triple (a,b,c) with a < b < c, center a, leaves b,c, and tree edges {a,b}
+    and {a,c}.  The central contribution is the complete pointwise-to-integral
     bridge together with the orientation-aware measure-preserving factorization
     that realizes the per-fork volume suppression.
   authors:
@@ -57,9 +59,9 @@ sources:
     note: >-
       This is the new geometric component developed in the present repository.
       It establishes the attachment-aware compound-fork bound from the exact
-      separated-pair volume ratio 17/32, a vertex-disjoint fork packing, and a
-      simultaneous measure-preserving coordinate factorization.  No external
-      theorem is imported for this bound.
+      separated-pair volume ratio 17/32, an order-compatible vertex-disjoint
+      fork packing, and a simultaneous measure-preserving coordinate
+      factorization.  No external theorem is imported for this bound.
     author_endorsement: "n/a"
   - title: "Single-element extensions of matroids"
     authors:
@@ -221,9 +223,12 @@ status:
     graph.  In dimension three it additionally proves, for every tree T, the
     stronger per-tree bound
     Vol(NBC_T) <= (17/32)^hardSphereNu T * hardSphereKappa^(k-1).
-    Here hardSphereNu T is the maximum cardinality of a pairwise
-    vertex-disjoint fork packing.  The proof is an attachment-aware,
-    orientation-aware measure-preserving factorization: each packed fork
+    Here hardSphereNu T is the maximum cardinality of a packing of pairwise
+    vertex-disjoint, order-compatible forks.  A formal fork has ordered labels
+    a < b < c, center a, leaves b,c, and tree edges {a,b} and {a,c}.  The proof
+    is an attachment-aware, orientation-aware measure-preserving factorization:
+    each packed
+    order-compatible fork
     contributes a separated pair of relative coordinates and every remaining
     coordinate contributes a unit-ball factor.  The primary configuration
     measure is the product of Euclidean Lebesgue measures on
@@ -234,7 +239,7 @@ status:
     targets.  The finite NBC cancellation, coordinate transport, and fork
     factorization form a checked bridge from the configuration-dependent
     overlap graph to quantitative measurable NBC-region volumes.
-  sorry_count: 1
+  sorry_count: 2
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
   main_results:
@@ -319,8 +324,9 @@ fidelity:
     equivalence rather than by definitional equality.  The flat NBC region is
     the image under that equivalence.  The theorem uses the lexicographically
     largest-edge broken-circuit convention.  The fork-packing upper bound is
-    specialized to d=3 and uses the formal maximum vertex-disjoint fork
-    packing hardSphereNu T; it does not assert an all-dimension analogue.
+    specialized to d=3 and uses the formal maximum packing of pairwise
+    vertex-disjoint, order-compatible forks, hardSphereNu T; it does not assert
+    an all-dimension analogue.
     Strict positivity and convergence corollaries remain separate targets.
 
 review:
@@ -343,8 +349,9 @@ alignment:
       module: "Solution.lean"
       status: "proved"
       note: >-
-        For every tree T, the maximum vertex-disjoint fork packing produces a
-        simultaneous separated-pair/unit-ball factorization and the bound
+        For every tree T, the maximum packing of pairwise vertex-disjoint,
+        order-compatible forks produces a simultaneous separated-pair/unit-ball
+        factorization and the bound
         (17/32)^hardSphereNu T * hardSphereKappa^(k-1).  The separated-pair
         constant is established by the checked three-dimensional lens
         calculation.
@@ -370,8 +377,9 @@ alignment:
       module: "Solution.lean"
       status: "proved"
       note: >-
-        Every fork in a verified vertex-disjoint packing is excluded from the
-        NBC region, and the resulting measurable avoidance region contains it.
+        Every order-compatible fork in a verified vertex-disjoint packing is
+        excluded from the NBC region, and the resulting measurable avoidance
+        region contains it.
 
 acknowledgements: >-
   Mathlib and the Lean toolchain; the OpenCode framework and the disclosed AI

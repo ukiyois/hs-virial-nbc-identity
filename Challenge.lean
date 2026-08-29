@@ -189,18 +189,19 @@ def hardSphereNBCVolumeFlat
       nbcRegion (V := Fin k)
         (hardSphereActiveExact (k := k) (d := d)) T)
 
-/-- A lexicographically ordered fork of a tree. -/
+/-- An order-compatible fork `(a,b,c)` with `a < b < c`; `a` is its center and
+`b,c` are its two leaves. -/
 def hardSphereFork {k : Nat} (T : Finset (Sym2 (Fin k)))
     (a b c : Fin k) : Prop :=
   a < b ∧ b < c ∧ s(a, b) ∈ T ∧ s(a, c) ∈ T
 
-/-- The three vertices supporting a fork triple. -/
+/-- The three vertices supporting an order-compatible fork triple. -/
 abbrev HardSphereForkTriple (k : Nat) := Fin k × Fin k × Fin k
 
 def hardSphereForkSupport {k : Nat} (f : HardSphereForkTriple k) : Finset (Fin k) :=
   {f.1, f.2.1, f.2.2}
 
-/-- A finite family of pairwise vertex-disjoint forks in a tree. -/
+/-- A finite family of pairwise vertex-disjoint, order-compatible forks in a tree. -/
 def hardSphereForkPacking {k : Nat}
     (T : Finset (Sym2 (Fin k))) (P : Finset (HardSphereForkTriple k)) : Prop :=
   (∀ f ∈ P, hardSphereFork T f.1 f.2.1 f.2.2) ∧
@@ -208,14 +209,14 @@ def hardSphereForkPacking {k : Nat}
       ∀ x, x ∈ hardSphereForkSupport f →
         x ∈ hardSphereForkSupport g → False)
 
-/-- All finite fork packings of a fixed tree. -/
+/-- All finite order-compatible fork packings of a fixed tree. -/
 noncomputable def hardSphereForkPackings {k : Nat}
     (T : Finset (Sym2 (Fin k))) :
     Finset (Finset (HardSphereForkTriple k)) := by
   classical
   exact (Finset.univ.powerset).filter (hardSphereForkPacking T)
 
-/-- The maximum cardinality of a pairwise vertex-disjoint fork packing. -/
+/-- The maximum cardinality of a pairwise vertex-disjoint, order-compatible fork packing. -/
 noncomputable def hardSphereNu {k : Nat}
     (T : Finset (Sym2 (Fin k))) : Nat :=
   (hardSphereForkPackings T).sup Finset.card

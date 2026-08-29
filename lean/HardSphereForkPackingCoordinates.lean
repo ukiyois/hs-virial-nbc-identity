@@ -73,7 +73,7 @@ lemma hardSphereTreeParentEdge_hardSphereTreeEdgeIndex {k : Nat} [NeZero k]
     exact he
   exact (Finset.mem_image.mp he').choose_spec.2
 
-/-- The two tree edges used by an ordered fork. -/
+/-- The two tree edges used by an order-compatible fork. -/
 def hardSphereForkMemberVertex {k : Nat}
     (f : HardSphereForkTriple k) (j : Fin 2) : Fin k :=
   if j = 0 then f.2.1 else f.2.2

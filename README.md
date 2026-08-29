@@ -15,14 +15,17 @@ Vol(NBC_T) <= (17 / 32) ^ hardSphereNu T * hardSphereKappa ^ (k - 1)
 ```
 
 Here `hardSphereKappa` is the volume of the unit ball in three-dimensional
-position space, and `hardSphereNu T` is the maximum cardinality of a
-pairwise vertex-disjoint fork packing in `T`.  Thus every available disjoint
-fork contributes an explicit factor `17/32`, strictly improving the base
-tree bound `Vol(NBC_T) <= hardSphereKappa ^ (k - 1)` whenever a fork is present.
+position space, and `hardSphereNu T` is the maximum cardinality of a packing of
+pairwise vertex-disjoint, order-compatible forks in `T`.  A formal fork is an
+ordered triple `(a,b,c)` with `a < b < c` and tree edges `{a,b}` and `{a,c}`;
+`a` is the center and `b,c` are the two leaves higher than it in the `Fin k`
+label order.  Each packed order-compatible fork contributes an explicit factor
+`17/32` to the base tree bound `Vol(NBC_T) <= hardSphereKappa ^ (k - 1)`.
 
 The factor is obtained from an attachment-aware, measure-preserving block
-factorization.  Each packed fork contributes two oriented relative-position
-coordinates constrained to the separated-pair region, whose exact volume is
+factorization.  Each packed order-compatible fork contributes two oriented
+relative-position coordinates constrained to the separated-pair region, whose
+exact volume is
 `(17/32) * hardSphereKappa ^ 2`; all remaining tree-difference coordinates lie
 in unit balls.  The construction handles the orientation of each tree edge
 and the unused coordinates simultaneously, rather than applying independent
@@ -95,8 +98,10 @@ The fork-packing upper bound is the dimension-three specialization: for every
 tree `T`, it bounds the corresponding NBC region by
 `(17/32) ^ hardSphereNu T * hardSphereKappa ^ (k - 1)`.  Its proof uses the
 exact separated-pair volume and a simultaneous coordinate factorization.  The
-formal natural-number parameter also includes the degenerate `d = 0` identity
-case.  The development does not claim strict positivity of `b_k`, a complete
+packing counted by `hardSphereNu T` consists of order-compatible triples
+`(a,b,c)` with `a < b < c`, center `a`, leaves `b,c`, and tree edges `{a,b}` and
+`{a,c}`.  The formal natural-number parameter also includes the degenerate
+`d = 0` identity case.  The development does not claim strict positivity of `b_k`, a complete
 sign-alternation theorem, convergence bounds, or freezing consequences.
 
 The NBC convention is deletion of the lexicographically largest edge from a
@@ -126,8 +131,9 @@ conclusions are separate results and are not formalized by this theorem.
 The central contribution is the combination of an exact NBC volume identity
 with an attachment-aware compound-fork estimate.  The identity turns the
 configuration-dependent signed Mayer sum into a finite sum of nonnegative
-tree-owned volumes.  The geometric layer then exploits pairwise disjoint
-forks inside each tree to obtain the explicit multiplicative suppression
+tree-owned volumes.  The geometric layer then exploits pairwise disjoint,
+order-compatible forks inside each tree to obtain the explicit multiplicative
+suppression
 `(17/32) ^ hardSphereNu T`.
 
 The decisive geometric step is a simultaneous, orientation-aware coordinate
@@ -149,7 +155,7 @@ geometry and its quantitative per-tree bound.
 | Mayer/tree-graph methods | Connected sums are expanded, rewritten, or bounded | Exact NBC-region volume equality |
 | Hard-sphere geometry | Existing overlap and configuration-space results | Configuration-dependent overlap graph and measurable tree-owned regions are linked pointwise to the integral |
 | Coordinates | Ordinary Euclidean/product-coordinate identifications | Explicit measure-preserving bridge in the checked theorem |
-| Fork geometry | Separated-pair and fork exclusions | Attachment-aware compound-fork factorization and the `17/32` per-fork volume bound |
+| Fork geometry | Separated-pair and fork exclusions | Attachment-aware factorization for order-compatible forks and the `17/32` per-fork volume bound |
 | Verification | Mathematical literature statements | Full discrete, measurable, integrable, and measure-transport chain checked in Lean |
 
 The recorded prior-work search did not identify an exact prior statement of this
