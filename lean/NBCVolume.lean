@@ -17,88 +17,32 @@ namespace HsVirial
   weight sum with Lebesgue integration after this algebraic identity.
 -/
 
-def sumNat : List Nat -> Nat
-  | [] => 0
-  | a :: as => a + sumNat as
-
-theorem sumNat_replicate_zero (n : Nat) :
-    sumNat (List.replicate n 0) = 0 := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-      simp [List.replicate, sumNat, ih]
-
-theorem sumNat_append {as bs : List Nat} :
-    sumNat (as ++ bs) = sumNat as + sumNat bs := by
-  induction as with
-  | nil => simp [sumNat]
-  | cons a as ih =>
-      simp [sumNat, ih, Nat.add_assoc]
+def sumNat (xs : List Nat) : Nat := xs.sum
 
 theorem sumNat_map_congr {X : Type} {xs : List X} {f g : X -> Nat}
     (h : forall x, f x = g x) :
     sumNat (xs.map f) = sumNat (xs.map g) := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih =>
-      simp [sumNat, h, ih]
+  exact congrArg sumNat (List.map_congr_left fun x _ => h x)
 
 theorem list_map_map {X Y Z : Type} (xs : List X) (f : X -> Y)
     (g : Y -> Z) :
     (xs.map f).map g = xs.map (fun x => g (f x)) := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih =>
-      simp [ih]
-
-theorem sumNat_map_add {X : Type} (xs : List X) (f g : X -> Nat) :
-    sumNat (xs.map (fun x => f x + g x)) =
-      sumNat (xs.map f) + sumNat (xs.map g) := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih =>
-       simp [sumNat, ih, Nat.add_assoc, Nat.add_left_comm]
-
-theorem sumNat_map_zero {X : Type} (xs : List X) :
-    sumNat (xs.map (fun _ => 0)) = 0 := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih =>
-      simp [sumNat, sumNat_replicate_zero]
+  exact List.map_map
 
 theorem mul_sumNat {xs : List Nat} (a : Nat) :
     a * sumNat xs = sumNat (xs.map (fun b => a * b)) := by
-  induction xs with
-  | nil => rfl
-  | cons b bs ih =>
-      simp [sumNat, ih, Nat.mul_add]
+  simpa only [sumNat, List.map_id, id_eq] using
+    (List.sum_map_mul_left xs id a).symm
 
 theorem sumNat_swap {X Y : Type} (xs : List X) (ys : List Y)
     (f : X -> Y -> Nat) :
     sumNat (xs.map (fun x => sumNat (ys.map (f x)))) =
       sumNat (ys.map (fun y => sumNat (xs.map (fun x => f x y)))) := by
   induction xs with
-  | nil =>
-      simp [sumNat, sumNat_replicate_zero]
+  | nil => simp [sumNat]
   | cons x xs ih =>
-      calc
-        sumNat ((x :: xs).map (fun x => sumNat (ys.map (f x)))) =
-            sumNat (ys.map (f x)) +
-              sumNat (xs.map (fun x => sumNat (ys.map (f x)))) := by
-          rfl
-        _ = sumNat (ys.map (f x)) +
-              sumNat (ys.map (fun y => sumNat (xs.map (fun x => f x y)))) := by
-          rw [ih]
-        _ = sumNat (ys.map (fun y =>
-              f x y + sumNat (xs.map (fun x => f x y)))) := by
-          symm
-          exact sumNat_map_add ys (fun y => f x y)
-            (fun y => sumNat (xs.map (fun x => f x y)))
-        _ = sumNat (ys.map (fun y =>
-              sumNat ((x :: xs).map (fun x => f x y)))) := by
-          apply sumNat_map_congr
-          intro y
-          rfl
+      simpa only [List.map_cons, sumNat, List.sum_cons, List.sum_map_add] using
+        congrArg (fun n => (ys.map (f x)).sum + n) ih
 
 def indicator (p : Bool) (a : Nat) : Nat :=
   if p then a else 0
@@ -160,24 +104,9 @@ theorem nbc_volume_identity {X T : Type} (points : List X) (trees : List T)
         intro x
         exact indicator_mul_one (region t x) (weight x)
 
-/- The pointwise expression is the finite counterpart of the integral
-   multiplicity.  This name is kept separate so that a later measure-theory
-   layer can state its bridge without changing this checked algebra. -/
-theorem nbc_multiplicity_is_region_sum {X T : Type}
-    (points : List X) (trees : List T) (weight : X -> Nat)
-    (region : T -> X -> Bool) :
-    sumNat (points.map (fun x =>
-      weight x * nbcMultiplicity trees region x)) =
-      sumNat (trees.map (nbcRegionWeight points weight region)) := by
-  exact nbc_volume_identity points trees weight region
+def sumInt (xs : List Int) : Int := xs.sum
 
-def sumInt : List Int -> Int
-  | [] => 0
-  | a :: as => a + sumInt as
-
-def paritySign : Nat -> Int
-  | 0 => 1
-  | n + 1 => -paritySign n
+def paritySign : Nat -> Int := matroidParitySign
 
 /-!
   This is the finite active-graph restriction used before the NBC step.  The
@@ -215,12 +144,14 @@ theorem signed_mayer_restriction {E : Type}
   | cons graph rest ih =>
       cases h : allActive active graph with
       | false =>
-          simp [signedMayerSum, activeGraphSum, signedMayerTerm,
-            sumInt, h]
+          simp only [signedMayerSum, List.map_cons, signedMayerTerm, h,
+            Bool.false_eq_true, ↓reduceIte, ite_self, sumInt, List.sum_cons,
+            zero_add, activeGraphSum, not_false_eq_true, List.filter_cons_of_neg]
           exact ih
       | true =>
-          simp [signedMayerSum, activeGraphSum, signedMayerTerm,
-            sumInt, h]
+          simp only [signedMayerSum, List.map_cons, signedMayerTerm, h, ↓reduceIte,
+            sumInt, List.sum_cons, activeGraphSum, List.filter_cons_of_pos,
+            add_right_inj]
           exact ih
 
 /-!
@@ -237,18 +168,7 @@ def signedList {A : Type} (xs : List A) (size : A -> Nat) : Int :=
 
 theorem sumInt_append {as bs : List Int} :
     sumInt (as ++ bs) = sumInt as + sumInt bs := by
-  induction as with
-  | nil => simp [sumInt]
-  | cons a as ih =>
-      simp [sumInt, ih, Int.add_assoc]
-
-theorem sumInt_map_congr {A : Type} {xs : List A} {f g : A -> Int}
-    (h : forall a, f a = g a) :
-    sumInt (xs.map f) = sumInt (xs.map g) := by
-  induction xs with
-  | nil => rfl
-  | cons a as ih =>
-      simp [sumInt, h, ih]
+  exact List.sum_append
 
 theorem signedList_eq_constant {A : Type} (xs : List A)
     (size : A -> Nat) (rank : Nat)
@@ -256,43 +176,24 @@ theorem signedList_eq_constant {A : Type} (xs : List A)
       paritySign (size a) = paritySign rank) :
     signedList xs size =
       sumInt (xs.map (fun _ => paritySign rank)) := by
-  induction xs with
-  | nil => rfl
-  | cons a as ih =>
-      have ha : paritySign (size a) = paritySign rank :=
-        same_sign a (List.mem_cons_self)
-      have htail : forall b, b ∈ as ->
-          paritySign (size b) = paritySign rank := by
-        intro b hb
-        exact same_sign b (List.mem_cons_of_mem a hb)
-      unfold signedList
-      change paritySign (size a) +
-          sumInt (as.map (fun b => paritySign (size b))) =
-        paritySign rank + sumInt (as.map (fun _ => paritySign rank))
-      rw [ha]
-      exact congrArg (fun z => paritySign rank + z) (ih htail)
-
-theorem sumInt_perm {as bs : List Int} (h : as.Perm bs) :
-    sumInt as = sumInt bs := by
-  induction h with
-  | nil => rfl
-  | cons a h ih =>
-      simp [sumInt, ih]
-  | swap a b as =>
-       simp [sumInt, Int.add_left_comm]
-  | trans h₁ h₂ ih₁ ih₂ =>
-      exact ih₁.trans ih₂
+  exact congrArg sumInt
+    (List.map_congr_left fun a ha => same_sign a ha)
 
 theorem sumInt_pair_zero {A : Type} (pairs : List (A × A))
     (size : A -> Nat)
-    (opposite : forall p : A × A,
+    (opposite : forall p : A × A, p ∈ pairs ->
       paritySign (size p.1) + paritySign (size p.2) = 0) :
     sumInt (pairs.flatMap (fun p =>
       [paritySign (size p.1), paritySign (size p.2)])) = 0 := by
+  revert opposite
   induction pairs with
-  | nil => rfl
+  | nil => intro _; rfl
   | cons p ps ih =>
-       simp [sumInt, opposite, ih]
+      intro opposite
+      have hp := opposite p (by simp)
+      have hps := ih (fun q hq => opposite q (List.mem_cons_of_mem p hq))
+      simp only [sumInt] at hps
+      simp [sumInt, hp, hps]
 
 structure NBCPairing (A : Type) where
   all : List A
@@ -302,7 +203,7 @@ structure NBCPairing (A : Type) where
   rank : Nat
   decomposition :
     all = good ++ badPairs.flatMap (fun p => [p.1, p.2])
-  opposite : forall p : A × A,
+  opposite : forall p : A × A, p ∈ badPairs ->
     paritySign (size p.1) + paritySign (size p.2) = 0
   goodParity : forall a, a ∈ good ->
     paritySign (size a) = paritySign rank
